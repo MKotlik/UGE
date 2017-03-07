@@ -30,11 +30,22 @@ def scale(matrix, sX, sY, sZ):
     return matrixOps.multiply(tMat, matrix)
 
 
-def rotate(theta, axis):
+def rotate(matrix, axis, theta):
     """Based on axis, apply different rotation type"""
-    pass
+    if axis.lower() == "z":
+        return rotateZ(matrix, theta)
+    elif axis.lower() == "y":
+        return rotateY(matrix, theta)
+    elif axis.lower() == "x":
+        return rotateX(matrix, theta)
+    else:
+        raise ValueError("transformOps.rotate() accepts X, Y, or Z axes")
 
 
-def rotationMatrix(horD, verD, forwardD):
-    """Apply changes to the appropriate point pos.s representing directions"""
-    pass
+def rotateZ(matrix, theta):
+    rAngle = theta * math.pi / 180.0
+    tMat[0][0] = math.cos(rAngle)
+    tMat[1][0] = -1 * math.sin(rAngle)
+    tMat[0][1] = math.sin(rAngle)
+    tMat[1][1] = math.cos(rAngle)
+    return matrixOps.multiply(tMat, matrix)
