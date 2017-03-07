@@ -44,8 +44,29 @@ def rotate(matrix, axis, theta):
 
 def rotateZ(matrix, theta):
     rAngle = theta * math.pi / 180.0
+    tMat = matrixOps.createIdentity(4)
     tMat[0][0] = math.cos(rAngle)
     tMat[1][0] = -1 * math.sin(rAngle)
     tMat[0][1] = math.sin(rAngle)
     tMat[1][1] = math.cos(rAngle)
+    return matrixOps.multiply(tMat, matrix)
+
+
+def rotateX(matrix, theta):
+    rAngle = theta * math.pi / 180.0
+    tMat = matrixOps.createIdentity(4)
+    tMat[1][1] = math.cos(rAngle)
+    tMat[2][1] = -1 * math.sin(rAngle)
+    tMat[1][2] = math.sin(rAngle)
+    tMat[2][2] = math.cos(rAngle)
+    return matrixOps.multiply(tMat, matrix)
+
+
+def rotateY(matrix, theta):
+    rAngle = theta * math.pi / 180.0
+    tMat = matrixOps.createIdentity(4)
+    tMat[0][0] = math.cos(rAngle)
+    tMat[2][0] = math.sin(rAngle)
+    tMat[1][2] = -1 * math.sin(rAngle)
+    tMat[2][2] = math.cos(rAngle)
     return matrixOps.multiply(tMat, matrix)
