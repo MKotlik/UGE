@@ -42,17 +42,6 @@ def printM(matrix):
     print toString(matrix)
 
 
-# Converts matrix to an int matrix, rounds all floats
-def toIntMatrix(matrix):
-    intMatrix = []
-    for col in matrix:
-        intCol = []
-        for rowCell in col:
-            intCol.append(int(round(rowCell)))
-        intMatrix.append(intCol)
-    return intMatrix
-
-
 # ++++++++++++++++++++++++ #
 # MULTIPLICATION FUNCTIONS #
 # ++++++++++++++++++++++++ #

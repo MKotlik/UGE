@@ -1,0 +1,14 @@
+from display import *
+from draw import *
+from matrix import *
+from transformOps import *
+
+screen = new_screen()
+color = [0, 0, 255]
+
+matrix1 = new_matrix()
+add_edge(matrix1, 50, 50, 0, 150, 50, 0)
+add_edge(matrix1, 50, 150, 0, 150, 150, 0)
+add_edge(matrix1, 50, 50, 0, 50, 150, 0)
+add_edge(matrix1, 150, 50, 0, 150, 150, 0)
+print_matrix(matrix1)
