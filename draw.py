@@ -19,6 +19,12 @@ def draw_matrix(edgeMat, screen, color):
 def draw_line(x0, y0, x1, y1, screen, color):
     # General draw_line wrapper
     # Decides which octant_helper to call, modifies starting-ending points
+    # Rounds x & y, in case they were taken from non-int matrix
+    x0 = int(round(x0))
+    y0 = int(round(y0))
+    x1 = int(round(x1))
+    y1 = int(round(y1))
+
     dX = abs(x1 - x0)
     dY = abs(y1 - y0)
     if (x1 >= x0):  # Quadrants 1 & 2 (Pos-x direction)
