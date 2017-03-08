@@ -3,6 +3,7 @@
 # Misha (Mikhail Kotlik)
 
 import matrixOps
+import math
 
 """
 Matrices look like:
@@ -24,9 +25,9 @@ def translate(matrix, a, b, c):
 # CHECK THAT I CAN MULTIPLY BY 4x4 IDENT MATRIX
 def scale(matrix, sX, sY, sZ):
     tMat = matrixOps.createIdentity(4)
-    tMat[0][0] = a
-    tMat[1][1] = b
-    tMat[2][2] = c
+    tMat[0][0] = sX
+    tMat[1][1] = sY
+    tMat[2][2] = sZ
     return matrixOps.multiply(tMat, matrix)
 
 
