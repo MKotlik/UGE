@@ -2,6 +2,8 @@ from display import *
 
 
 def draw_matrix(edgeMat, screen, color):
+    if len(matrix) < 2:
+        raise ValueError('draw.draw_matrix() needs at least two points in matrix)
     pairNum = 0
     limit = len(edgeMat)
     if len(edgeMat) % 2 != 0:
@@ -10,7 +12,7 @@ def draw_matrix(edgeMat, screen, color):
         p1 = edgeMat[pairNum]
         p2 = edgeMat[pairNum + 1]
         draw_line(p1[0], p1[1], p2[0], p2[1], screen, color)
-        pairNum += 1
+        pairNum += 2
     if len(edgeMat) % 2 != 0:
         lastPt = edgeMat[len(edgeMat) - 1]
         plot(screen, color, lastPt[0], lastPt[1])
