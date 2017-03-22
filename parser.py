@@ -1,6 +1,7 @@
 from display import *
 from matrix import *
 from draw import *
+from curveDraw import *
 from transformOps import *
 import matrixOps
 import time
@@ -75,6 +76,29 @@ def parse_file(fname, points, transform, screen, color):
                     raise ValueError("rotate call must be followed by 2 args")
                 else:
                     transform = rotate(transform, args[0], int(args[1]))
+            elif cLine == "circle":
+                args = script.readline().split(" ")
+                if len(args) != 4:
+                    raise ValueError("circle call must be followed by 4 args")
+                else:
+                    add_circle(points, int(args[0]), int(args[1]),
+                               int(args[2]), int(args[3]), 1000)
+            elif cLine == "bezier":
+                args = script.readline().split(" ")
+                if len(args) != 8:
+                    raise ValueError("bezier call must be followed by 8 args")
+                else:
+                    add_bezier(points, int(args[0]), int(args[1]),
+                               int(args[2]), int(args[3]), int(args[4]),
+                               int(args[5]), int(args[6]), int(args[7]), 1000)
+            elif cLine == "hermite":
+                args = script.readline().split(" ")
+                if len(args) != 8:
+                    raise ValueError("hermite call must be followed by 8 args")
+                else:
+                    add_hermite(points, int(args[0]), int(args[1]),
+                               int(args[2]), int(args[3]), int(args[4]),
+                               int(args[5]), int(args[6]), int(args[7]), 1000)
             elif cLine == "apply":
                 points = matrixOps.multiply(transform, points)
             elif cLine == "display":
