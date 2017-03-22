@@ -97,8 +97,8 @@ def parse_file(fname, points, transform, screen, color):
                     raise ValueError("hermite call must be followed by 8 args")
                 else:
                     add_hermite(points, int(args[0]), int(args[1]),
-                               int(args[2]), int(args[3]), int(args[4]),
-                               int(args[5]), int(args[6]), int(args[7]), 1000)
+                                int(args[2]), int(args[3]), int(args[4]),
+                                int(args[5]), int(args[6]), int(args[7]), 1000)
             elif cLine == "apply":
                 points = matrixOps.multiply(transform, points)
             elif cLine == "display":
