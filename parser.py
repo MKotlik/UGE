@@ -1,7 +1,6 @@
 from display import *
 from matrix import *
 from draw import *
-from curveDraw import *
 from transformOps import *
 import matrixOps
 import time

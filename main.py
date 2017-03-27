@@ -2,7 +2,6 @@ from display import *
 from draw import *
 from parser import *
 from matrix import *
-from curveDraw import *
 import matrixOps
 
 # TODO: Fix EdgeMatrix implementation & make it simpler
