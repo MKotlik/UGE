@@ -13,7 +13,9 @@ color = [0, 255, 0]
 edges = []
 transform = new_matrix()
 
-parse_file('script', edges, transform, screen, color)
+# parse_file('script', edges, transform, screen, color)
+
+add_box(edges, 0, 0, 0, 200, 100, 400)
 
 """
 add_circle(edges, 250, 250, 0, 200, 1000)

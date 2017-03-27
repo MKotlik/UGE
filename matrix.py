@@ -15,8 +15,9 @@ def add_point(matrix, point):
         raise ValueError(
             "matrix.addPoint() point must be a 3-element list")
     else:
-        point.append(1)
-        matrix.append(point)
+        fourP = point[:]
+        print fourP
+        matrix.append(fourP.append(1))
 
 
 def add_edge(matrix, point1, point2):

@@ -7,7 +7,44 @@
 from display import *
 from matrix import *
 from draw import *
-import matrixOps
+from matrixOps import *
+
+
+# ++++++++++++++++++ #
+# 3D SHAPE FUNCTIONS #
+# ++++++++++++++++++ #
+
+# Adds a rectangular prism to an edge matricx
+def add_box(matrix, x, y, z, width, height, depth):
+    """Given the upper-left corner (x, y, z) of a rectangular prism and its
+    width, height, and depth, calculates the 12 edges of the prism and adds
+    them to the matrix"""
+    uLCorner = [x, y, z]
+    add_edge(matrix, uLCorner, [x + width, y, z])
+    print uLCorner
+    add_edge(matrix, uLCorner, [x, y - height, z])
+    print uLCorner
+    add_edge(matrix, [x + width, y, z], [x + width, y - width, z])
+    add_edge(matrix, [x, y - height, z], [x + width, y - width, z])
+    print matrix[0]
+    printM(matrix)
+    pass
+
+
+def add_sphere(matrix, cx, cy, cz, r, step):
+    pass
+
+
+def generate_sphere(matrix, cx, cy, cz, r, step):
+    pass
+
+
+def add_torus(matrix, cx, cy, cz, r0, r1, step):
+    pass
+
+
+def generate_torus(matrix, cx, cy, cz, r0, r1, step):
+    pass
 
 
 # +++++++++++++++ #
@@ -50,8 +87,8 @@ def add_bezier(matrix, x0, y0, x1, y1, x2, y2, x3, y3, steps):
 
 
 def add_general_curve(matrix, inverse_mat, x_base, y_base, steps):
-    x_coeff = matrixOps.multiply(inverse_mat, x_base)[0]
-    y_coeff = matrixOps.multiply(inverse_mat, y_base)[0]
+    x_coeff = multiply(inverse_mat, x_base)[0]
+    y_coeff = multiply(inverse_mat, y_base)[0]
 
     t = 0
     dStep = 1.0 / steps
@@ -78,7 +115,7 @@ def add_general_curve(matrix, inverse_mat, x_base, y_base, steps):
 def draw_lines(edgeMat, screen, color):
     if len(edgeMat) < 2:
         raise ValueError(
-            'draw.draw_matrix() needs at least two points in matrix')
+            'draw.draw_matrix() needs at least two matrix in matrix')
     pairNum = 0
     limit = len(edgeMat)
     if len(edgeMat) % 2 != 0:
@@ -95,7 +132,7 @@ def draw_lines(edgeMat, screen, color):
 
 def draw_line(x0, y0, x1, y1, screen, color):
     # General draw_line wrapper
-    # Decides which octant_helper to call, modifies starting-ending points
+    # Decides which octant_helper to call, modifies starting-ending matrix
     # Rounds x & y, in case they were taken from non-int matrix
     x0 = int(round(x0))
     y0 = int(round(y0))
