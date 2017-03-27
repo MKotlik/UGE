@@ -1,6 +1,8 @@
 # curveDraw Module
 # Unified Graphics Engine - Computer Graphics
 # Misha (Mikhail Kotlik)
+
+
 from display import *
 from matrix import *
 from draw import *
@@ -17,7 +19,7 @@ def add_circle(matrix, cX, cY, cZ, r, steps):
         X = cX + r * math.cos(angle)
         Y = cY + r * math.sin(angle)
         if prevX != -1:
-            add_edge(matrix, prevX, prevY, 0, X, Y, 0)
+            add_edge(matrix, [prevX, prevY, 0], [X, Y, 0])
         prevX, prevY = X, Y
         curStep += dStep
     return matrix  # Yes or no?
@@ -26,7 +28,7 @@ def add_circle(matrix, cX, cY, cZ, r, steps):
 def add_hermite(matrix, x0, y0, x1, y1, mX0, mY0, mX1, mY1, steps):
     print "hermite"
     # I'm not sure if im using this correctly...
-    hermite_mat = [[2, -3, 0, 1], [-2, 3, 0, 0], [1, -2, 1, 0], [1,-1, 0, 0]]
+    hermite_mat = [[2, -3, 0, 1], [-2, 3, 0, 0], [1, -2, 1, 0], [1, -1, 0, 0]]
     x_base = [[x0, x1, mX0, mX1]]
     y_base = [[y0, y1, mY0, mY1]]
     return add_general_curve(matrix, hermite_mat, x_base, y_base, steps)
@@ -51,9 +53,11 @@ def add_general_curve(matrix, inverse_mat, x_base, y_base, steps):
     prevY = y_coeff[3]
 
     while t < 1:
-        X = (x_coeff[0] * t**3) + (x_coeff[1] * t**2) + (x_coeff[2] * t) + x_coeff[3]
-        Y = (y_coeff[0] * t**3) + (y_coeff[1] * t**2) + (y_coeff[2] * t) + y_coeff[3]
-        add_edge(matrix, prevX, prevY, 0, X, Y, 0)
+        X = (x_coeff[0] * t**3) + (x_coeff[1] * t**2) + \
+            (x_coeff[2] * t) + x_coeff[3]
+        Y = (y_coeff[0] * t**3) + (y_coeff[1] * t**2) + \
+            (y_coeff[2] * t) + y_coeff[3]
+        add_edge(matrix, [prevX, prevY, 0], [X, Y, 0])
         prevX = X
         prevY = Y
         t += dStep

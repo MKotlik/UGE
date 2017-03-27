@@ -39,8 +39,6 @@ See the file script for an example of the file format
 
 def parse_file(fname, points, transform, screen, color):
     with open(fname, 'r') as script:
-        # expectMode = "c"  # c - any command; names - specific commands
-        # expectArgs = 0
         keepReading = True
         while keepReading:
             line = script.readline()
@@ -51,10 +49,12 @@ def parse_file(fname, points, transform, screen, color):
                 if len(args) != 6:
                     raise ValueError("line call must be followed by 6 args")
                 else:
-                    add_edge(points, int(args[0]), int(args[1]), int(args[
-                             2]), int(args[3]), int(args[4]), int(args[5]))
+                    add_edge(points, [int(args[0]), int(args[1]), int(args[
+                             2])], [int(args[3]), int(args[4]), int(args[5])])
+
             elif cLine == "ident":
                 transform = matrixOps.createIdentity(4)
+
             elif cLine == "scale":
                 args = script.readline().split(" ")
                 if len(args) != 3:
@@ -63,6 +63,7 @@ def parse_file(fname, points, transform, screen, color):
                 else:
                     transform = scale(transform, int(
                         args[0]), int(args[1]), int(args[2]))
+
             elif cLine == "move":
                 args = script.readline().split(" ")
                 if len(args) != 3:
@@ -70,12 +71,14 @@ def parse_file(fname, points, transform, screen, color):
                 else:
                     transform = translate(transform, int(
                         args[0]), int(args[1]), int(args[2]))
+
             elif cLine == "rotate":
                 args = script.readline().split(" ")
                 if len(args) != 2:
                     raise ValueError("rotate call must be followed by 2 args")
                 else:
                     transform = rotate(transform, args[0], int(args[1]))
+
             elif cLine == "circle":
                 args = script.readline().split(" ")
                 if len(args) != 4:
@@ -83,6 +86,7 @@ def parse_file(fname, points, transform, screen, color):
                 else:
                     add_circle(points, int(args[0]), int(args[1]),
                                int(args[2]), int(args[3]), 1000)
+
             elif cLine == "bezier":
                 args = script.readline().split(" ")
                 if len(args) != 8:
@@ -91,6 +95,7 @@ def parse_file(fname, points, transform, screen, color):
                     add_bezier(points, int(args[0]), int(args[1]),
                                int(args[2]), int(args[3]), int(args[4]),
                                int(args[5]), int(args[6]), int(args[7]), 1000)
+
             elif cLine == "hermite":
                 args = script.readline().split(" ")
                 if len(args) != 8:
@@ -99,13 +104,16 @@ def parse_file(fname, points, transform, screen, color):
                     add_hermite(points, int(args[0]), int(args[1]),
                                 int(args[2]), int(args[3]), int(args[4]),
                                 int(args[5]), int(args[6]), int(args[7]), 1000)
+
             elif cLine == "apply":
                 points = matrixOps.multiply(transform, points)
+
             elif cLine == "display":
                 clear_screen(screen)  # YES? NO? MAYBE SO?
                 draw_lines(points, screen, color)
                 display(screen)
                 time.sleep(0.5)
+
             elif cLine == "save":
                 args = script.readline().split(" ")
                 if len(args) != 1:
@@ -113,6 +121,7 @@ def parse_file(fname, points, transform, screen, color):
                 else:
                     draw_lines(points, screen, color)
                     save_extension(screen, args[0])
+
             elif cLine == "quit":
                 keepReading = False
             elif line == "\n":  # Blank line

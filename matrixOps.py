@@ -14,6 +14,7 @@ We are not modifying in place; we are returning a new matrix
 
 
 # Returns string representation of matrix
+# Table will be padded and columns separated by pipes
 def toString(matrix):
     if len(matrix) == 0 or len(matrix[0]) == 0:
         return str(matrix)
