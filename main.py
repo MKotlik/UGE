@@ -16,6 +16,7 @@ transform = new_matrix()
 # parse_file('script', edges, transform, screen, color)
 
 add_box(edges, 0, 0, 0, 200, 100, 400)
+display(edges)
 
 """
 add_circle(edges, 250, 250, 0, 200, 1000)

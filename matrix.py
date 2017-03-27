@@ -17,7 +17,8 @@ def add_point(matrix, point):
     else:
         fourP = point[:]
         print fourP
-        matrix.append(fourP.append(1))
+        print fourP.append(1)
+        matrix.append(fourP)
 
 
 def add_edge(matrix, point1, point2):
