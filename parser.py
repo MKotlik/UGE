@@ -104,6 +104,15 @@ def parse_file(fname, points, transform, screen, color):
                                 int(args[2]), int(args[3]), int(args[4]),
                                 int(args[5]), int(args[6]), int(args[7]), 1000)
 
+            elif cLine == "box":
+                args = script.readline().split(" ")
+                if len(args) != 6:
+                    raise ValueError("box call must be followed by 6 args")
+                else:
+                    add_box(points, int(args[0]), int(args[1]),
+                            int(args[2]), int(args[3]), int(args[4]),
+                            int(args[5]))
+
             elif cLine == "apply":
                 points = matrixOps.multiply(transform, points)
 
@@ -120,6 +129,10 @@ def parse_file(fname, points, transform, screen, color):
                 else:
                     draw_lines(points, screen, color)
                     save_extension(screen, args[0])
+
+            elif cLine.startswith("#"):
+                # This is a comment
+                pass
 
             elif cLine == "quit":
                 keepReading = False

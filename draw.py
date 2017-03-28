@@ -19,31 +19,33 @@ def add_box(matrix, x, y, z, width, height, depth):
     """Given the upper-left corner (x, y, z) of a rectangular prism and its
     width, height, and depth, calculates the 12 edges of the prism and adds
     them to the matrix"""
-    uLCorner = [x, y, z]
     # U,L,N to U,R,N
-    add_edge(matrix, uLCorner, [x + width, y, z])
+    add_edge(matrix, [x, y, z], [x + width, y, z])
     # U,L,N to D,L,N
-    add_edge(matrix, uLCorner, [x, y - height, z])
+    add_edge(matrix, [x, y, z], [x, y - height, z])
     # U,R,N to D,R,N
     add_edge(matrix, [x + width, y, z], [x + width, y - width, z])
     # D,L,N to D,R,N
     add_edge(matrix, [x, y - height, z], [x + width, y - width, z])
     # U,L,N to U,L,F
-    add_edge(matrix, uLCorner, [x, y, z+depth])
+    add_edge(matrix, [x, y, z], [x, y, z + depth])
     # U,R,N to U,R,F
-    add_edge(matrix, [x+width, y, z], [x+width, y, z+depth])
+    add_edge(matrix, [x + width, y, z], [x + width, y, z + depth])
     # D,L,N to D,L,F
-    add_edge(matrix, [x,y-height, z], [x, y-height, z+depth])
+    add_edge(matrix, [x, y - height, z], [x, y - height, z + depth])
     # D,R,N to D,R,F
-    add_edge(matrix, [x+width,y-height,z+depth], [x+width, y-height, z+depth])
+    add_edge(matrix, [x + width, y - height, z + depth],
+             [x + width, y - height, z + depth])
     # U,L,F to U,R,F
-    add_edge(matrix, [x,y,z+depth], [x+width,y,z+depth])
+    add_edge(matrix, [x, y, z + depth], [x + width, y, z + depth])
     # U,L,F to D,L,F
-    add_edge(matrix, [x,y,z+depth], [x, y - height, z+depth])
+    add_edge(matrix, [x, y, z + depth], [x, y - height, z + depth])
     # U,R,F to D,R,F
-    add_edge(matrix, [x + width, y, z+depth], [x + width, y - width, z+depth])
+    add_edge(matrix, [x + width, y, z + depth],
+             [x + width, y - width, z + depth])
     # D,L,F to D,R,F
-    add_edge(matrix, [x, y - height, z+depth], [x + width, y - width, z+depth])
+    add_edge(matrix, [x, y - height, z + depth],
+             [x + width, y - width, z + depth])
     printM(matrix)
     return matrix
 

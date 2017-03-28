@@ -16,8 +16,7 @@ def add_point(matrix, point):
             "matrix.addPoint() point must be a 3-element list")
     else:
         fourP = point[:]
-        print fourP
-        print fourP.append(1)
+        fourP.append(1)
         matrix.append(fourP)
 
 
