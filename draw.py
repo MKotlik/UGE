@@ -52,23 +52,34 @@ def add_box(matrix, x, y, z, width, height, depth):
     # D,L,F to D,R,F
     add_edge(matrix, [x, y - height, z + depth],
              [x + width, y - height, z + depth])
-    printM(matrix)
     return matrix
 
 
-def add_sphere(matrix, cx, cy, cz, r, step):
+def add_sphere(matrix, cx, cy, cz, r, steps):
     pass
 
 
-def generate_sphere(matrix, cx, cy, cz, r, step):
+def generate_sphere(matrix, cx, cy, cz, r, steps):
+    rot = 0
+    cirStep = 0
+    dStep = 1.0 / steps
+    while rot < 1:
+        while cirStep < 1:
+            X = r * math.cos(cirStep * math.pi) + cx
+            Y = r * math.sin(cirStep * math.pi) * \
+                math.cos(rot * 2 * math.pi) + cy
+            Z = r * math.sin(cirStep * math.pi) * \
+                math.sin(rot * 2 * math.pi) + cz
+            add_point(matrix, [X, Y, Z])
+            cirStep += dStep
+        rot += dStep
+
+
+def add_torus(matrix, cx, cy, cz, r0, r1, steps):
     pass
 
 
-def add_torus(matrix, cx, cy, cz, r0, r1, step):
-    pass
-
-
-def generate_torus(matrix, cx, cy, cz, r0, r1, step):
+def generate_torus(matrix, cx, cy, cz, r0, r1, steps):
     pass
 
 
@@ -140,7 +151,7 @@ def add_general_curve(matrix, inverse_mat, x_base, y_base, steps):
 def draw_lines(edgeMat, screen, color):
     if len(edgeMat) < 2:
         raise ValueError(
-            'draw.draw_matrix() needs at least two matrix in matrix')
+            'draw.draw_lines() needs at least two points in matrix')
     pairNum = 0
     limit = len(edgeMat)
     if len(edgeMat) % 2 != 0:
@@ -256,3 +267,11 @@ def draw_line_octant8(x0, y0, x1, y1, screen, color):
         x += 1
         d += 2 * A
     plot(screen, color, x1, y1)
+
+
+def draw_points(points, screen, color):
+    if len(points) < 1:
+        raise ValueError(
+            'draw.draw_points() needs at least one point in matrix')
+    for point in points:
+        plot(screen, color, int(point[0]), int(point[1]))
