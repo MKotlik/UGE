@@ -121,6 +121,14 @@ def parse_file(fname, points, transform, screen, color):
                     add_sphere(points, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), 100)
 
+            elif cLine == "torus":
+                args = script.readline().split(" ")
+                if len(args) != 5:
+                    raise ValueError("sphere call must be followed by 5 args")
+                else:
+                    add_torus(points, int(args[0]), int(args[1]),
+                            int(args[2]), int(args[3]), int(args[4]), 100)
+
             elif cLine == "apply":
                 points = matrixOps.multiply(transform, points)
 
@@ -129,6 +137,10 @@ def parse_file(fname, points, transform, screen, color):
                 draw_lines(points, screen, color)
                 display(screen)
                 time.sleep(0.5)
+
+            elif cLine == "clear":
+                points = []
+                clear_screen(screen)
 
             elif cLine == "save":
                 args = script.readline().split(" ")

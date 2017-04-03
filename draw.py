@@ -86,11 +86,28 @@ def generate_sphere(matrix, cx, cy, cz, r, steps):
 
 
 def add_torus(matrix, cx, cy, cz, r0, r1, steps):
-    pass
+    for point in generate_torus(matrix, cx, cy, cz, r0, r1, steps):
+        add_edge(matrix, [point[0], point[1], point[
+                 2]], [point[0], point[1], point[2]])
 
 
 def generate_torus(matrix, cx, cy, cz, r0, r1, steps):
-    pass
+    steps = float(steps)
+    rot = 0
+    cirPoints = []
+    while rot <= steps:
+        cirStep = 0
+        while cirStep <= steps:
+            rotAng = 2 * rot / steps * math.pi
+            cirAng = 2 * cirStep / steps * math.pi
+            X = (r0 * math.cos(rotAng) + r1) * math.cos(cirAng) + cx
+            Y = r0 * math.sin(rotAng) + cy
+            Z = (r0 * math.cos(rotAng) + r1) * -1 * math.sin(cirAng) + cz
+            # add_point(matrix, [X, Y, Z])
+            cirPoints.append([X, Y, Z])
+            cirStep += 1
+        rot += 1
+    return cirPoints
 
 
 # +++++++++++++++ #
