@@ -14,23 +14,34 @@ from matrixOps import *
 # POLYGON FUNCTIONS #
 # +++++++++++++++++ #
 
-def add_polygon( points, [x0, y0, z0], [x1, y1, z1], [x2, y2, z2]):
+def add_polygon(points, point1, point2, point3):
     """
     ======== void add_polygon() ==========
-    Inputs:   surfaces matrix, 3 vertices
-    Adds the vertices (x0, y0, z0), (x1, y1, z1)
+    Inputs: surfaces matrix, 3 vertices
+    Result: Adds the vertices (x0, y0, z0), (x1, y1, z1)
     and (x2, y2, z2) to the polygon matrix. They
     define a single triangle surface.
     ====================
     """
-    pass
+    # Copy & add scale factor to each point (required for transformations)
+    # If scale factor is added to argument points, results in duplicate cells
+    sPoint1 = point1[:]
+    sPoint1.append(1)
+    sPoint2 = point2[:]
+    sPoint2.append(1)
+    sPoint3 = point3[:]
+    sPoint3.append(1)
+    # Append points to polygon matrix
+    points.append(sPoint1)
+    points.append(sPoint2)
+    points.append(sPoint3)
 
 
-def draw_polygons( points, screen, color ):
+def draw_polygons(points, screen, color):
     """
     ======== void draw_polygons() ==========
-    Inputs:   polygons matrix, screen, color
-    Goes through polygons 3 points at a time, drawing 
+    Inputs: polygons matrix, screen, color
+    Result: Goes through polygons 3 points at a time, drawing
     lines connecting each points to create bounding
     triangles
     ====================
@@ -40,9 +51,15 @@ def draw_polygons( points, screen, color ):
             'draw.draw_polygons() needs at least three points in matrix')
     i = 0
     while i < len(points) - 2:
-        draw_line(points[i][0], points[i][1], points[i+1][0], points[i+1][1])
-        draw_line(points[i+1][0], points[i+1][1], points[i+2][0], points[i+2][1])
-        draw_line(points[i+2][0], points[i+2][1], points[i][0], points[i][1])
+        # From 0th to 1st
+        draw_line(points[i][0], points[i][1], points[
+                  i + 1][0], points[i + 1][1], screen, color)
+        # From 1st to 2nd
+        draw_line(points[i + 1][0], points[i + 1][1],
+                  points[i + 2][0], points[i + 2][1], screen, color)
+        # From 2nd to 0th
+        draw_line(points[i + 2][0], points[i + 2]
+                  [1], points[i][0], points[i][1], screen, color)
         i += 3
 
 
@@ -91,14 +108,26 @@ def add_box(matrix, x, y, z, width, height, depth):
     return matrix
 
 
-def add_sphere(matrix, cx, cy, cz, r, step):
-    
-    for point in generate_sphere(matrix, cx, cy, cz, r, step):
+def add_sphere(matrix, cx, cy, cz, r, steps):
+    # Draws polygons on sphere surface
+    points = generate_sphere(matrix, cx, cy, cz, r, steps)
+    i = 0
+    while i < len(points) - steps - 1:
+        add_polygon(matrix, points[i], points[i + steps + 1], points[i + 1])
+        add_polygon(matrix, points[i], points[i + steps], points[i + steps + 1])
+        i += 1
+    # return matrix  # ?
+
+    """
+    # Plots points alone
+    for point in generate_sphere(matrix, cx, cy, cz, r, steps):
         add_edge(matrix, [point[0], point[1], point[
                  2]], [point[0], point[1], point[2]])
     """
 
-    cirPoints = generate_sphere(matrix, cx, cy, cz, r, step)
+    """
+    # Connects the points with lines
+    cirPoints = generate_sphere(matrix, cx, cy, cz, r, steps)
     i = 0
     while i < len(cirPoints) - 1:
         add_edge(matrix, cirPoints[i], cirPoints[i+1])
@@ -113,9 +142,11 @@ def generate_sphere(matrix, cx, cy, cz, r, steps):
     while rot <= steps:
         cirStep = 0
         while cirStep <= steps:
-            X = r * math.cos(2 * rot / steps * math.pi) * math.cos(cirStep / steps * math.pi) + cx
+            X = r * math.cos(2 * rot / steps * math.pi) * \
+                math.cos(cirStep / steps * math.pi) + cx
             Y = r * math.sin(2 * rot / steps * math.pi) + cy
-            Z = r * math.cos(2 * rot  / steps * math.pi) * -1 * math.sin(cirStep / steps * math.pi) + cz
+            Z = r * math.cos(2 * rot / steps * math.pi) * - \
+                1 * math.sin(cirStep / steps * math.pi) + cz
             # add_point(matrix, [X, Y, Z])
             cirPoints.append([X, Y, Z])
             cirStep += 1
