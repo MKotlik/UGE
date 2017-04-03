@@ -56,14 +56,16 @@ def add_box(matrix, x, y, z, width, height, depth):
 
 
 def add_sphere(matrix, cx, cy, cz, r, step):
+    
     for point in generate_sphere(matrix, cx, cy, cz, r, step):
         add_edge(matrix, [point[0], point[1], point[
                  2]], [point[0], point[1], point[2]])
     """
-    cirPoints = generate_sphere(points, cx, cy, cz, r, step)
+
+    cirPoints = generate_sphere(matrix, cx, cy, cz, r, step)
     i = 0
     while i < len(cirPoints) - 1:
-        add_edge(points, cirPoints[i], cirPoints[i+1])
+        add_edge(matrix, cirPoints[i], cirPoints[i+1])
         i += 1
     """
 
