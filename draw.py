@@ -55,24 +55,34 @@ def add_box(matrix, x, y, z, width, height, depth):
     return matrix
 
 
-def add_sphere(matrix, cx, cy, cz, r, steps):
-    pass
+def add_sphere(matrix, cx, cy, cz, r, step):
+    for point in generate_sphere(matrix, cx, cy, cz, r, step):
+        add_edge(matrix, [point[0], point[1], point[
+                 2]], [point[0], point[1], point[2]])
+    """
+    cirPoints = generate_sphere(points, cx, cy, cz, r, step)
+    i = 0
+    while i < len(cirPoints) - 1:
+        add_edge(points, cirPoints[i], cirPoints[i+1])
+        i += 1
+    """
 
 
 def generate_sphere(matrix, cx, cy, cz, r, steps):
+    steps = float(steps)
     rot = 0
-    cirStep = 0
-    dStep = 1.0 / steps
-    while rot < 1:
-        while cirStep < 1:
-            X = r * math.cos(cirStep * math.pi) + cx
-            Y = r * math.sin(cirStep * math.pi) * \
-                math.cos(rot * 2 * math.pi) + cy
-            Z = r * math.sin(cirStep * math.pi) * \
-                math.sin(rot * 2 * math.pi) + cz
-            add_point(matrix, [X, Y, Z])
-            cirStep += dStep
-        rot += dStep
+    cirPoints = []
+    while rot <= steps:
+        cirStep = 0
+        while cirStep <= steps:
+            X = r * math.cos(2 * rot / steps * math.pi) * math.cos(cirStep / steps * math.pi) + cx
+            Y = r * math.sin(2 * rot / steps * math.pi) + cy
+            Z = r * math.cos(2 * rot  / steps * math.pi) * -1 * math.sin(cirStep / steps * math.pi) + cz
+            # add_point(matrix, [X, Y, Z])
+            cirPoints.append([X, Y, Z])
+            cirStep += 1
+        rot += 1
+    return cirPoints
 
 
 def add_torus(matrix, cx, cy, cz, r0, r1, steps):

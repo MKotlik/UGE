@@ -113,6 +113,14 @@ def parse_file(fname, points, transform, screen, color):
                             int(args[2]), int(args[3]), int(args[4]),
                             int(args[5]))
 
+            elif cLine == "sphere":
+                args = script.readline().split(" ")
+                if len(args) != 4:
+                    raise ValueError("sphere call must be followed by 4 args")
+                else:
+                    add_sphere(points, int(args[0]), int(args[1]),
+                            int(args[2]), int(args[3]), 100)
+
             elif cLine == "apply":
                 points = matrixOps.multiply(transform, points)
 

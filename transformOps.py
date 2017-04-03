@@ -67,7 +67,7 @@ def rotateY(matrix, theta):
     rAngle = theta * math.pi / 180.0
     tMat = matrixOps.createIdentity(4)
     tMat[0][0] = math.cos(rAngle)
-    tMat[2][0] = math.sin(rAngle)
-    tMat[1][2] = -1 * math.sin(rAngle)
+    tMat[0][2] = math.sin(rAngle)
+    tMat[2][0] = -1 * math.sin(rAngle)
     tMat[2][2] = math.cos(rAngle)
     return matrixOps.multiply(tMat, matrix)
