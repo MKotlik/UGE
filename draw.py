@@ -10,6 +10,42 @@ from draw import *
 from matrixOps import *
 
 
+# +++++++++++++++++ #
+# POLYGON FUNCTIONS #
+# +++++++++++++++++ #
+
+def add_polygon( points, [x0, y0, z0], [x1, y1, z1], [x2, y2, z2]):
+    """
+    ======== void add_polygon() ==========
+    Inputs:   surfaces matrix, 3 vertices
+    Adds the vertices (x0, y0, z0), (x1, y1, z1)
+    and (x2, y2, z2) to the polygon matrix. They
+    define a single triangle surface.
+    ====================
+    """
+    pass
+
+
+def draw_polygons( points, screen, color ):
+    """
+    ======== void draw_polygons() ==========
+    Inputs:   polygons matrix, screen, color
+    Goes through polygons 3 points at a time, drawing 
+    lines connecting each points to create bounding
+    triangles
+    ====================
+    """
+    if len(points) < 3:
+        raise ValueError(
+            'draw.draw_polygons() needs at least three points in matrix')
+    i = 0
+    while i < len(points) - 2:
+        draw_line(points[i][0], points[i][1], points[i+1][0], points[i+1][1])
+        draw_line(points[i+1][0], points[i+1][1], points[i+2][0], points[i+2][1])
+        draw_line(points[i+2][0], points[i+2][1], points[i][0], points[i][1])
+        i += 3
+
+
 # ++++++++++++++++++ #
 # 3D SHAPE FUNCTIONS #
 # ++++++++++++++++++ #
