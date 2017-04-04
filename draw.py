@@ -155,9 +155,20 @@ def generate_sphere(matrix, cx, cy, cz, r, steps):
 
 
 def add_torus(matrix, cx, cy, cz, r0, r1, steps):
+    # Draws polygons on torus surface
+    points = generate_torus(matrix, cx, cy, cz, r0, r1, steps)
+    i = 0
+    while i < len(points) - steps - 1:
+        add_polygon(matrix, points[i], points[i + steps + 1], points[i + 1])
+        add_polygon(matrix, points[i], points[i + steps], points[i + steps + 1])
+        i += 1
+
+    """
+    # Draws points on sphere surface
     for point in generate_torus(matrix, cx, cy, cz, r0, r1, steps):
         add_edge(matrix, [point[0], point[1], point[
                  2]], [point[0], point[1], point[2]])
+    """
 
 
 def generate_torus(matrix, cx, cy, cz, r0, r1, steps):

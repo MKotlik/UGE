@@ -13,7 +13,10 @@ transform = new_matrix()
 
 # parse_file('script', edges, transform, screen, color)
 
-add_sphere(edges, 250, 250, 0, 200, 30)
+add_torus(edges, 250, 250, 0, 25, 100, 20)
+edges = rotate(edges, "x", 30)
+edges = scale(edges, 1.5, 1.5, 1.5)
+edges = translate(edges, -100, 20, 0)
 draw_polygons(edges, screen, color)
 display(screen)
 
