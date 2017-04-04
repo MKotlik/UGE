@@ -5,6 +5,8 @@ from transformOps import *
 import matrixOps
 import time
 
+# TODO: Update the command list
+
 """
 Goes through the file named filename and performs all of the actions listed in that file.
 The file follows the following format:
@@ -36,7 +38,7 @@ See the file script for an example of the file format
 """
 
 
-def parse_file(fname, points, transform, screen, color):
+def parse_file(fname, points, polygons, transform, screen, color):
     with open(fname, 'r') as script:
         keepReading = True
         while keepReading:
@@ -109,7 +111,7 @@ def parse_file(fname, points, transform, screen, color):
                 if len(args) != 6:
                     raise ValueError("box call must be followed by 6 args")
                 else:
-                    add_box(points, int(args[0]), int(args[1]),
+                    add_box(polygons, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), int(args[4]),
                             int(args[5]))
 
@@ -118,36 +120,47 @@ def parse_file(fname, points, transform, screen, color):
                 if len(args) != 4:
                     raise ValueError("sphere call must be followed by 4 args")
                 else:
-                    add_sphere(points, int(args[0]), int(args[1]),
-                            int(args[2]), int(args[3]), 100)
+                    add_sphere(polygons, int(args[0]), int(args[1]),
+                            int(args[2]), int(args[3]), 50)  # adjust steps
 
             elif cLine == "torus":
                 args = script.readline().split(" ")
                 if len(args) != 5:
                     raise ValueError("sphere call must be followed by 5 args")
                 else:
-                    add_torus(points, int(args[0]), int(args[1]),
-                            int(args[2]), int(args[3]), int(args[4]), 100)
+                    add_torus(polygons, int(args[0]), int(args[1]),
+                            int(args[2]), int(args[3]), int(args[4]), 50)
 
             elif cLine == "apply":
-                points = matrixOps.multiply(transform, points)
+                if len(points) > 0:
+                    points = matrixOps.multiply(transform, points)
+                if len(polygons) > 0:
+                    polygons = matrixOps.multiply(transform, polygons)
 
             elif cLine == "display":
-                clear_screen(screen)  # YES? NO? MAYBE SO?
-                draw_lines(points, screen, color)
+                clear_screen(screen)  # pretty sure it's necessary
+                if len(points) > 0:
+                    draw_lines(points, screen, color)
+                if len(polygons) > 0:
+                    draw_polygons(polygons, screen, color)
                 display(screen)
                 time.sleep(0.5)
 
             elif cLine == "clear":
                 points = []
-                clear_screen(screen)
+                polygons = []
+                clear_screen(screen)  # Possibly redundant
 
             elif cLine == "save":
                 args = script.readline().split(" ")
                 if len(args) != 1:
                     raise ValueError("save call must be followed by 1 arg")
                 else:
-                    draw_lines(points, screen, color)
+                    clear_screen(screen)  # pretty sure it's necessary
+                    if len(points) > 0:
+                        draw_lines(points, screen, color)
+                    if len(polygons) > 0:
+                        draw_polygons(polygons, screen, color)
                     save_extension(screen, args[0])
 
             elif cLine.startswith("#"):

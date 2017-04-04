@@ -68,7 +68,11 @@ def draw_polygons(points, screen, color):
 # ++++++++++++++++++ #
 
 # Adds the polyogons for a box surface to a polyogon matrx
-def add_box_surface(matrix, x, y, z, width, height, depth):
+def add_box(matrix, x, y, z, width, height, depth):
+    """ Draws a rectangular prism with a polygon surface
+    Inputs: Upper-left corner (x, y, z), width, height, and depth
+    Result: Calculates the surface polygons, adds to given polygon matrix
+    """
     # IMPORTANT, DO NOT MIX UP A POLYGON MATRIX AND AN EDGE MATRIX
     # Front face
     add_polygon(matrix, [x, y - height, z], [x + width, y, z], [x, y, z])
@@ -95,10 +99,11 @@ def add_box_surface(matrix, x, y, z, width, height, depth):
     add_polygon(matrix, [x + width, y - height, z], [x, y - height, z + depth], [x + width, y - height, z + depth])
 
 # Adds a rectangular prism to an edge matrix
-def add_box(matrix, x, y, z, width, height, depth):
-    """Given the upper-left corner (x, y, z) of a rectangular prism and its
-    width, height, and depth, calculates the 12 edges of the prism and adds
-    them to the matrix"""
+def add_box_edges(matrix, x, y, z, width, height, depth):
+    """ Draws the 12 edges of a rectangular prism
+    Inputs: Upper-left corner (x, y, z), width, height, and depth
+    Result: Calculates the edges of the prism, adds to given edge matrix
+    """
 
     # FRONT FACE
     # U,L,N to U,R,N
