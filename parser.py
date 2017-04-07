@@ -121,7 +121,7 @@ def parse_file(fname, points, polygons, transform, screen, color):
                     raise ValueError("sphere call must be followed by 4 args")
                 else:
                     add_sphere(polygons, int(args[0]), int(args[1]),
-                            int(args[2]), int(args[3]), 50)  # adjust steps
+                            int(args[2]), int(args[3]), 20)  # adjust steps
 
             elif cLine == "torus":
                 args = script.readline().split(" ")
@@ -129,7 +129,7 @@ def parse_file(fname, points, polygons, transform, screen, color):
                     raise ValueError("sphere call must be followed by 5 args")
                 else:
                     add_torus(polygons, int(args[0]), int(args[1]),
-                            int(args[2]), int(args[3]), int(args[4]), 50)
+                            int(args[2]), int(args[3]), int(args[4]), 20)
 
             elif cLine == "apply":
                 if len(points) > 0:

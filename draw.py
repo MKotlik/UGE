@@ -50,17 +50,43 @@ def draw_polygons(points, screen, color):
         raise ValueError(
             'draw.draw_polygons() needs at least three points in matrix')
     i = 0
+    # Implement backface culling now
+    numShowed = 0
     while i < len(points) - 2:
-        # From 0th to 1st
-        draw_line(points[i][0], points[i][1], points[
-                  i + 1][0], points[i + 1][1], screen, color)
-        # From 1st to 2nd
-        draw_line(points[i + 1][0], points[i + 1][1],
-                  points[i + 2][0], points[i + 2][1], screen, color)
-        # From 2nd to 0th
-        draw_line(points[i + 2][0], points[i + 2]
-                  [1], points[i][0], points[i][1], screen, color)
+        if should_show(points[i], points[i+1], points[i+2]):
+            # From 0th to 1st
+            draw_line(points[i][0], points[i][1], points[
+                      i + 1][0], points[i + 1][1], screen, color)
+            # From 1st to 2nd
+            draw_line(points[i + 1][0], points[i + 1][1],
+                      points[i + 2][0], points[i + 2][1], screen, color)
+            # From 2nd to 0th
+            draw_line(points[i + 2][0], points[i + 2]
+                      [1], points[i][0], points[i][1], screen, color)
+            numShowed += 1
         i += 3
+    print "Showed: " + str(numShowed) + "; Culled: " + str((len(points) / 3 - numShowed))
+
+
+def should_show(point0, point1, point2):
+    # print "calculating cull"
+    A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
+    B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
+    N = [A[1] * B[2] - A[2] * B[1], A[2] * B[0] - A[0] * B[2], A[0] * B[1] - A[1] * B[0]]
+    V = [0, 0, 1]
+    magN = math.sqrt(N[0]**2 + N[1]**2 + N[2]**2)
+    magV = math.sqrt(1)
+    nv = N[0] * V[0] + N[1] * V[1] + N[2] * V[2]
+    if magN == 0 or magV == 0:
+        cosTheta = 0
+    else:
+        cosTheta = float(nv) / (magN * magV)
+    theta = math.acos(cosTheta)
+    print "theta: " + str(theta)
+    # nv = |N| * |V| * cos(theta), so the sign reflects the sign of cos(theta)
+    # If positive, draw; if negative, don't draw
+    return theta > -(math.pi / 2.0) and theta < (math.pi / 2.0)
+
 
 
 # ++++++++++++++++++ #
