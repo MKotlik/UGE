@@ -12,12 +12,17 @@ edges = []  # edge matrix (lines & 2d shapes)
 polygons = []  # polygon matrix (3d shapes)
 transform = new_matrix()
 
-parse_file('script', edges, polygons, transform, screen, color)
+# parse_file('script', edges, polygons, transform, screen, color)
 
 
 # ++++++++++ #
 # TEMP TESTS #
 # ++++++++++ #
+
+# Sphere troubleshooting
+points = generate_sphere([], 250, 250, 0, 150, 40)
+draw_points(points, screen, color)
+display(screen)
 
 """
 add_torus(polygons, 250, 250, 0, 25, 100, 50)
