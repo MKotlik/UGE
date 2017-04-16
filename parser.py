@@ -45,6 +45,8 @@ def parse_file(fname, points, polygons, transform, screen, color):
             line = script.readline()
             cLine = line.strip("\n").lower()
 
+            # --- LINE --- #
+
             if cLine == "line":
                 args = script.readline().split(" ")
                 if len(args) != 6:
@@ -52,6 +54,8 @@ def parse_file(fname, points, polygons, transform, screen, color):
                 else:
                     add_edge(points, [int(args[0]), int(args[1]), int(args[
                              2])], [int(args[3]), int(args[4]), int(args[5])])
+
+            # --- TRANSFORMATIONS --- #
 
             elif cLine == "ident":
                 transform = matrixOps.createIdentity(4)
@@ -80,6 +84,8 @@ def parse_file(fname, points, polygons, transform, screen, color):
                 else:
                     transform = rotate(transform, args[0], int(args[1]))
 
+            # --- CURVES --- #
+
             elif cLine == "circle":
                 args = script.readline().split(" ")
                 if len(args) != 4:
@@ -106,6 +112,8 @@ def parse_file(fname, points, polygons, transform, screen, color):
                                 int(args[2]), int(args[3]), int(args[4]),
                                 int(args[5]), int(args[6]), int(args[7]), 1000)
 
+            # --- 3D SHAPES --- #
+
             elif cLine == "box":
                 args = script.readline().split(" ")
                 if len(args) != 6:
@@ -130,6 +138,8 @@ def parse_file(fname, points, polygons, transform, screen, color):
                 else:
                     add_torus(polygons, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), int(args[4]), 20)
+
+            # --- IMAGE CMDS --- #
 
             elif cLine == "apply":
                 if len(points) > 0:

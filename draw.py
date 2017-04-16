@@ -53,7 +53,7 @@ def draw_polygons(points, screen, color):
     # Implement backface culling now
     numShowed = 0
     while i < len(points) - 2:
-        if should_show(points[i], points[i+1], points[i+2]):
+        if should_show(points[i], points[i + 1], points[i + 2]):
             # From 0th to 1st
             draw_line(points[i][0], points[i][1], points[
                       i + 1][0], points[i + 1][1], screen, color)
@@ -70,6 +70,13 @@ def draw_polygons(points, screen, color):
 
 def should_show(point0, point1, point2):
     # print "calculating cull"
+    # WINSTON'S METHOD
+    A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
+    B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
+    Nz = A[0] * B[1] - A[1] * B[0]
+    return Nz > 0
+
+    """
     A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
     B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
     N = [A[1] * B[2] - A[2] * B[1], A[2] * B[0] - A[0] * B[2], A[0] * B[1] - A[1] * B[0]]
@@ -82,11 +89,10 @@ def should_show(point0, point1, point2):
     else:
         cosTheta = float(nv) / (magN * magV)
     theta = math.acos(cosTheta)
-    print "theta: " + str(theta)
     # nv = |N| * |V| * cos(theta), so the sign reflects the sign of cos(theta)
     # If positive, draw; if negative, don't draw
     return theta > -(math.pi / 2.0) and theta < (math.pi / 2.0)
-
+    """
 
 
 # ++++++++++++++++++ #
@@ -102,29 +108,41 @@ def add_box(matrix, x, y, z, width, height, depth):
     # IMPORTANT, DO NOT MIX UP A POLYGON MATRIX AND AN EDGE MATRIX
     # Front face
     add_polygon(matrix, [x, y - height, z], [x + width, y, z], [x, y, z])
-    add_polygon(matrix, [x, y - height, z], [x + width, y, z], [x + width, y - height, z])
+    add_polygon(matrix, [x, y - height, z],
+                [x + width, y, z], [x + width, y - height, z])
 
     # Back face
-    add_polygon(matrix, [x, y, z + depth], [x + width, y - height, z + depth], [x, y - height, z + depth])
-    add_polygon(matrix, [x, y, z + depth], [x + width, y - height, z + depth], [x + width, y, z + depth])
+    add_polygon(matrix, [x, y, z + depth], [x + width, y -
+                                            height, z + depth], [x, y - height, z + depth])
+    add_polygon(matrix, [x, y, z + depth], [x + width, y -
+                                            height, z + depth], [x + width, y, z + depth])
 
     # Right face
-    add_polygon(matrix, [x + width, y - height, z], [x + width, y, z + depth], [x + width, y - height, z + depth])
-    add_polygon(matrix, [x + width, y - height, z], [x + width, y, z + depth], [x + width, y, z])
+    add_polygon(matrix, [x + width, y - height, z], [x + width,
+                                                     y, z + depth], [x + width, y - height, z + depth])
+    add_polygon(matrix, [x + width, y - height, z],
+                [x + width, y, z + depth], [x + width, y, z])
 
     # Left face
-    add_polygon(matrix, [x, y - height, z], [x, y, z + depth], [x, y - height, z + depth])
+    add_polygon(matrix, [x, y - height, z],
+                [x, y, z + depth], [x, y - height, z + depth])
     add_polygon(matrix, [x, y - height, z], [x, y, z + depth], [x, y, z])
 
     # Top face
-    add_polygon(matrix, [x, y, z], [x + width, y, z + depth], [x + width, y, z])
-    add_polygon(matrix, [x, y, z], [x + width, y, z + depth], [x, y, z + depth])
+    add_polygon(matrix, [x, y, z], [x + width,
+                                    y, z + depth], [x + width, y, z])
+    add_polygon(matrix, [x, y, z], [x + width,
+                                    y, z + depth], [x, y, z + depth])
 
     # Bottom face
-    add_polygon(matrix, [x + width, y - height, z], [x, y - height, z + depth], [x, y - height, z])
-    add_polygon(matrix, [x + width, y - height, z], [x, y - height, z + depth], [x + width, y - height, z + depth])
+    add_polygon(matrix, [x + width, y - height, z],
+                [x, y - height, z + depth], [x, y - height, z])
+    add_polygon(matrix, [x + width, y - height, z], [x, y -
+                                                     height, z + depth], [x + width, y - height, z + depth])
 
 # Adds a rectangular prism to an edge matrix
+
+
 def add_box_edges(matrix, x, y, z, width, height, depth):
     """ Draws the 12 edges of a rectangular prism
     Inputs: Upper-left corner (x, y, z), width, height, and depth
@@ -172,7 +190,8 @@ def add_sphere(matrix, cx, cy, cz, r, steps):
     i = 0
     while i < len(points) - steps - 1:
         add_polygon(matrix, points[i], points[i + steps + 1], points[i + 1])
-        add_polygon(matrix, points[i], points[i + steps], points[i + steps + 1])
+        add_polygon(matrix, points[i], points[
+                    i + steps], points[i + steps + 1])
         i += 1
     # return matrix  # ?
 
@@ -200,11 +219,19 @@ def generate_sphere(matrix, cx, cy, cz, r, steps):
     while rot <= steps:
         cirStep = 0
         while cirStep <= steps:
+            """
+            # Winston's rotation
+            X = r * math.cos(cirStep / steps * math.pi) + cx
+            Y = r * math.sin(cirStep / steps * math.pi) + math.cos(2 * rot / steps * math.pi) + cy
+            Z = r * math.sin(cirStep / steps * math.pi) + math.sin(2 * rot / steps * math.pi) + cz
+            """
+
             X = r * math.cos(2 * rot / steps * math.pi) * \
                 math.cos(cirStep / steps * math.pi) + cx
             Y = r * math.sin(2 * rot / steps * math.pi) + cy
             Z = r * math.cos(2 * rot / steps * math.pi) * - \
                 1 * math.sin(cirStep / steps * math.pi) + cz
+
             # add_point(matrix, [X, Y, Z])
             cirPoints.append([X, Y, Z])
             cirStep += 1
@@ -218,7 +245,8 @@ def add_torus(matrix, cx, cy, cz, r0, r1, steps):
     i = 0
     while i < len(points) - steps - 1:
         add_polygon(matrix, points[i], points[i + steps + 1], points[i + 1])
-        add_polygon(matrix, points[i], points[i + steps], points[i + steps + 1])
+        add_polygon(matrix, points[i], points[
+                    i + steps], points[i + steps + 1])
         i += 1
 
     """
