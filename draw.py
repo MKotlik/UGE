@@ -76,24 +76,6 @@ def should_show(point0, point1, point2):
     Nz = A[0] * B[1] - A[1] * B[0]
     return Nz > 0
 
-    """
-    A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
-    B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
-    N = [A[1] * B[2] - A[2] * B[1], A[2] * B[0] - A[0] * B[2], A[0] * B[1] - A[1] * B[0]]
-    V = [0, 0, 1]
-    magN = math.sqrt(N[0]**2 + N[1]**2 + N[2]**2)
-    magV = math.sqrt(1)
-    nv = N[0] * V[0] + N[1] * V[1] + N[2] * V[2]
-    if magN == 0 or magV == 0:
-        cosTheta = 0
-    else:
-        cosTheta = float(nv) / (magN * magV)
-    theta = math.acos(cosTheta)
-    # nv = |N| * |V| * cos(theta), so the sign reflects the sign of cos(theta)
-    # If positive, draw; if negative, don't draw
-    return theta > -(math.pi / 2.0) and theta < (math.pi / 2.0)
-    """
-
 
 # ++++++++++++++++++ #
 # 3D SHAPE FUNCTIONS #
@@ -109,71 +91,28 @@ def add_box(matrix, x, y, z, width, height, depth):
     x1 = x + width
     y1 = y - height
     z1 = z - depth
-    # Front face
-    """
-    add_polygon(matrix, [x, y1, z], [x1, y, z], [x, y, z])
-    add_polygon(matrix, [x, y1, z], [x1, y, z], [x1, y1, z])
 
-    # Back face
-    add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x, y1, z1])
-    add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x1, y, z1])
-
-    # Right face
-    add_polygon(matrix, [x1, y1, z], [x1,y, z1], [x1, y1, z1])
-    add_polygon(matrix, [x1, y1, z],[x1, y, z1], [x1, y, z])
-
-    # Left face
-    add_polygon(matrix, [x, y1, z], [x, y, z1], [x, y1, z1])
-    add_polygon(matrix, [x, y1, z], [x, y, z1], [x, y, z])
-
-    # Top face
-    add_polygon(matrix, [x, y, z], [x1,y, z1], [x1, y, z])
-    add_polygon(matrix, [x, y, z], [x1,y, z1], [x, y, z1])
-
-    # Bottom face
-    add_polygon(matrix, [x1, y1, z],[x, y1, z1], [x, y1, z])
-    add_polygon(matrix, [x1, y1, z], [x, y1, z1], [x1, y1, z1])
-    """
-
-    #front
+    # Front Face
     add_polygon(matrix, [x1, y, z], [x, y, z], [x, y1, z])
     add_polygon(matrix, [x1, y, z], [x, y1, z], [x1, y1, z])
 
-    """
-    #back
-    add_polygon(matrix, [x1, y, z1], [x, y1, z1], [x, y, z1])
-    add_polygon(matrix, [x1, y, z1], [x1, y1, z1], [x, y1, z1])
-    """
-
-    # Back face
+    # Back Face
     add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x, y1, z1])
     add_polygon(matrix, [x, y, z1], [x1, y, z1], [x1, y1, z1])
 
-    #side left
+    # Left Face
     add_polygon(matrix, [x, y, z], [x, y, z1], [x, y1, z1])
     add_polygon(matrix, [x, y, z], [x, y1, z1], [x, y1, z])
 
-    """
-    #side right
-    add_polygon(matrix, [x1, y, z1], [x1, y, z], [x1, y1, z1])
-    add_polygon(matrix, [x1, y, z], [x1, y1, z], [x1, y1, z1])
-    """
-
-    #side right
+    # Right Face
     add_polygon(matrix, [x1, y, z1], [x1, y, z], [x1, y1, z])
     add_polygon(matrix, [x1, y, z1], [x1, y1, z], [x1, y1, z1])
 
-    #top
+    # Top Face
     add_polygon(matrix, [x1, y, z1], [x, y, z], [x1, y, z])
     add_polygon(matrix, [x1, y, z1], [x, y, z1], [x, y, z])
 
-    """
-    #bottom
-    add_polygon(matrix, [x1, y1, z1], [x1, y1, z], [x, y1, z])
-    add_polygon(matrix, [x1, y1, z1], [x, y1, z], [x, y1, z1])
-    """
-
-    #bottom
+    # Bottom Face
     add_polygon(matrix, [x1, y1, z], [x, y1, z], [x, y1, z1])
     add_polygon(matrix, [x1, y1, z], [x1, y, z1], [x1, y1, z1])
 
@@ -229,7 +168,7 @@ def add_sphere(matrix, cx, cy, cz, r, steps):
                     i + steps], points[i + steps + 1])
         i += 1
     # return matrix  # ?
-
+    # SAVE THESE MODES FOR DEBUGGING
     """
     # Plots points alone
     for point in generate_sphere(matrix, cx, cy, cz, r, steps):
@@ -272,13 +211,6 @@ def add_torus(matrix, cx, cy, cz, r0, r1, steps):
         add_polygon(matrix, points[i], points[
                     i + steps], points[i + steps + 1])
         i += 1
-
-    """
-    # Draws points on sphere surface
-    for point in generate_torus(matrix, cx, cy, cz, r0, r1, steps):
-        add_edge(matrix, [point[0], point[1], point[
-                 2]], [point[0], point[1], point[2]])
-    """
 
 
 def generate_torus(matrix, cx, cy, cz, r0, r1, steps):
