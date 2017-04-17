@@ -213,30 +213,19 @@ def add_sphere(matrix, cx, cy, cz, r, steps):
 
 
 def generate_sphere(matrix, cx, cy, cz, r, steps):
-    steps = float(steps)
+    step = 1.0 / steps
+    points = []
     rot = 0
-    cirPoints = []
-    while rot <= steps:
-        cirStep = 0
-        while cirStep <= steps:
-            """
-            # Winston's rotation
-            X = r * math.cos(cirStep / steps * math.pi) + cx
-            Y = r * math.sin(cirStep / steps * math.pi) + math.cos(2 * rot / steps * math.pi) + cy
-            Z = r * math.sin(cirStep / steps * math.pi) + math.sin(2 * rot / steps * math.pi) + cz
-            """
-
-            X = r * math.cos(2 * rot / steps * math.pi) * \
-                math.cos(cirStep / steps * math.pi) + cx
-            Y = r * math.sin(2 * rot / steps * math.pi) + cy
-            Z = r * math.cos(2 * rot / steps * math.pi) * - \
-                1 * math.sin(cirStep / steps * math.pi) + cz
-
-            # add_point(matrix, [X, Y, Z])
-            cirPoints.append([X, Y, Z])
-            cirStep += 1
-        rot += 1
-    return cirPoints
+    while rot <= 1 + step:
+        circ = 0
+        while circ <= 1 + step:
+            x = r * math.cos(math.pi * circ) + cx
+            y = r * math.sin(math.pi * circ) * math.cos(2 * math.pi * rot) + cy
+            z = r * math.sin(math.pi * circ) * math.sin(2 * math.pi * rot) + cz
+            points.append([x, y, z])
+            circ += step
+        rot += step
+    return points
 
 
 def add_torus(matrix, cx, cy, cz, r0, r1, steps):
