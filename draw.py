@@ -70,7 +70,7 @@ def draw_polygons(points, screen, color):
 
 def should_show(point0, point1, point2):
     # print "calculating cull"
-    # WINSTON'S METHOD
+    # return True
     A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
     B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
     Nz = A[0] * B[1] - A[1] * B[0]
@@ -106,41 +106,76 @@ def add_box(matrix, x, y, z, width, height, depth):
     Result: Calculates the surface polygons, adds to given polygon matrix
     """
     # IMPORTANT, DO NOT MIX UP A POLYGON MATRIX AND AN EDGE MATRIX
+    x1 = x + width
+    y1 = y - height
+    z1 = z - depth
     # Front face
-    add_polygon(matrix, [x, y - height, z], [x + width, y, z], [x, y, z])
-    add_polygon(matrix, [x, y - height, z],
-                [x + width, y, z], [x + width, y - height, z])
+    """
+    add_polygon(matrix, [x, y1, z], [x1, y, z], [x, y, z])
+    add_polygon(matrix, [x, y1, z], [x1, y, z], [x1, y1, z])
 
     # Back face
-    add_polygon(matrix, [x, y, z + depth], [x + width, y -
-                                            height, z + depth], [x, y - height, z + depth])
-    add_polygon(matrix, [x, y, z + depth], [x + width, y -
-                                            height, z + depth], [x + width, y, z + depth])
+    add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x, y1, z1])
+    add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x1, y, z1])
 
     # Right face
-    add_polygon(matrix, [x + width, y - height, z], [x + width,
-                                                     y, z + depth], [x + width, y - height, z + depth])
-    add_polygon(matrix, [x + width, y - height, z],
-                [x + width, y, z + depth], [x + width, y, z])
+    add_polygon(matrix, [x1, y1, z], [x1,y, z1], [x1, y1, z1])
+    add_polygon(matrix, [x1, y1, z],[x1, y, z1], [x1, y, z])
 
     # Left face
-    add_polygon(matrix, [x, y - height, z],
-                [x, y, z + depth], [x, y - height, z + depth])
-    add_polygon(matrix, [x, y - height, z], [x, y, z + depth], [x, y, z])
+    add_polygon(matrix, [x, y1, z], [x, y, z1], [x, y1, z1])
+    add_polygon(matrix, [x, y1, z], [x, y, z1], [x, y, z])
 
     # Top face
-    add_polygon(matrix, [x, y, z], [x + width,
-                                    y, z + depth], [x + width, y, z])
-    add_polygon(matrix, [x, y, z], [x + width,
-                                    y, z + depth], [x, y, z + depth])
+    add_polygon(matrix, [x, y, z], [x1,y, z1], [x1, y, z])
+    add_polygon(matrix, [x, y, z], [x1,y, z1], [x, y, z1])
 
     # Bottom face
-    add_polygon(matrix, [x + width, y - height, z],
-                [x, y - height, z + depth], [x, y - height, z])
-    add_polygon(matrix, [x + width, y - height, z], [x, y -
-                                                     height, z + depth], [x + width, y - height, z + depth])
+    add_polygon(matrix, [x1, y1, z],[x, y1, z1], [x, y1, z])
+    add_polygon(matrix, [x1, y1, z], [x, y1, z1], [x1, y1, z1])
+    """
 
-# Adds a rectangular prism to an edge matrix
+    #front
+    add_polygon(matrix, [x1, y, z], [x, y, z], [x, y1, z])
+    add_polygon(matrix, [x1, y, z], [x, y1, z], [x1, y1, z])
+
+    """
+    #back
+    add_polygon(matrix, [x1, y, z1], [x, y1, z1], [x, y, z1])
+    add_polygon(matrix, [x1, y, z1], [x1, y1, z1], [x, y1, z1])
+    """
+
+    # Back face
+    add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x, y1, z1])
+    add_polygon(matrix, [x, y, z1], [x1, y, z1], [x1, y1, z1])
+
+    #side left
+    add_polygon(matrix, [x, y, z], [x, y, z1], [x, y1, z1])
+    add_polygon(matrix, [x, y, z], [x, y1, z1], [x, y1, z])
+
+    """
+    #side right
+    add_polygon(matrix, [x1, y, z1], [x1, y, z], [x1, y1, z1])
+    add_polygon(matrix, [x1, y, z], [x1, y1, z], [x1, y1, z1])
+    """
+
+    #side right
+    add_polygon(matrix, [x1, y, z1], [x1, y, z], [x1, y1, z])
+    add_polygon(matrix, [x1, y, z1], [x1, y1, z], [x1, y1, z1])
+
+    #top
+    add_polygon(matrix, [x1, y, z1], [x, y, z], [x1, y, z])
+    add_polygon(matrix, [x1, y, z1], [x, y, z1], [x, y, z])
+
+    """
+    #bottom
+    add_polygon(matrix, [x1, y1, z1], [x1, y1, z], [x, y1, z])
+    add_polygon(matrix, [x1, y1, z1], [x, y1, z], [x, y1, z1])
+    """
+
+    #bottom
+    add_polygon(matrix, [x1, y1, z], [x, y1, z], [x, y1, z1])
+    add_polygon(matrix, [x1, y1, z], [x1, y, z1], [x1, y1, z1])
 
 
 def add_box_edges(matrix, x, y, z, width, height, depth):
