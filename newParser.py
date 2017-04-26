@@ -42,10 +42,14 @@ See the file script for an example of the file format
 def parse_file(fname, screen, color):
     with open(fname, 'r') as script:
         keepReading = True
+
+        tStack = [matrixOps.createIdentity(4)]
+        # blank is used as a starting point for transformations
+        blank = matrixOps.createIdentity(4)
+
         while keepReading:
             line = script.readline()
             cLine = line.strip("\n").lower()
-            tStack = matrixOps.createIdentity(4)
 
             # --- LINE --- #
 
@@ -77,10 +81,11 @@ def parse_file(fname, screen, color):
                         "cannot perform operation on empty transform stack"
                     )
                 else:
-                    tMat = scale(transform, int(
+                    tMat = scale(blank, int(
                         args[0]), int(args[1]), int(args[2]))
                     tStack[-1] = matrixOps.multiply(tStack[-1], tMat)
-                    
+                    #tStack[-1] = matrixOps.multiply(tMat, tStack[-1])
+
             elif cLine == "move":
                 args = script.readline().split(" ")
                 if len(args) != 3:
@@ -90,17 +95,25 @@ def parse_file(fname, screen, color):
                         "cannot perform operation on empty transform stack"
                     )
                 else:
-                    transform = translate(transform, int(
+                    tMat = translate(blank, int(
                         args[0]), int(args[1]), int(args[2]))
+                    #print tStack[-1]
                     tStack[-1] = matrixOps.multiply(tStack[-1], tMat)
+                    #tStack[-1] = matrixOps.multiply(tMat, tStack[-1])
+                    #print tStack[-1]
 
             elif cLine == "rotate":
                 args = script.readline().split(" ")
                 if len(args) != 2:
                     raise ValueError("rotate call must be followed by 2 args")
+                elif len(tStack) == 0:
+                    raise IndexError(
+                        "cannot perform operation on empty transform stack"
+                    )
                 else:
-                    transform = rotate(transform, args[0], int(args[1]))
+                    tMat = rotate(blank, args[0], int(args[1]))
                     tStack[-1] = matrixOps.multiply(tStack[-1], tMat)
+                    #tStack[-1] = matrixOps.multiply(tMat, tStack[-1])
 
             # --- TRANFORMATION STACK --- #
             elif cLine == "push":
@@ -160,45 +173,63 @@ def parse_file(fname, screen, color):
                     add_box(polygons, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), int(args[4]),
                             int(args[5]))
+                    #print polygons
+                    #print "tStack " + str(tStack[-1])
                     polygons = matrixOps.multiply(tStack[-1], polygons)
-                    draw_polygons(points, screen, color)
+                    #polygons = matrixOps.multiply(polygons, tStack[-1])
+                    #print polygons
+                    draw_polygons(polygons, screen, color)
 
             elif cLine == "sphere":
                 args = script.readline().split(" ")
                 if len(args) != 4:
                     raise ValueError("sphere call must be followed by 4 args")
                 else:
+                    polygons = []
                     add_sphere(polygons, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), 20)  # adjust steps
+                    polygons = matrixOps.multiply(tStack[-1], polygons)
+                    draw_polygons(polygons, screen, color)
 
             elif cLine == "torus":
                 args = script.readline().split(" ")
                 if len(args) != 5:
                     raise ValueError("sphere call must be followed by 5 args")
                 else:
+                    polygons = []
                     add_torus(polygons, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), int(args[4]), 20)
+                    polygons = matrixOps.multiply(tStack[-1], polygons)
+                    draw_polygons(polygons, screen, color)
 
             # --- IMAGE CMDS --- #
 
+            # "apply" call should be deprecated with stack use
             elif cLine == "apply":
                 if len(points) > 0:
                     points = matrixOps.multiply(transform, points)
                 if len(polygons) > 0:
                     polygons = matrixOps.multiply(transform, polygons)
 
+
             elif cLine == "display":
+                """
+                # drawing in "display" call deprecated with stack use
                 clear_screen(screen)  # pretty sure it's necessary
                 if len(points) > 0:
                     draw_lines(points, screen, color)
                 if len(polygons) > 0:
                     draw_polygons(polygons, screen, color)
+                """
                 display(screen)
                 time.sleep(0.5)
 
             elif cLine == "clear":
+                """
+                # resetting matrices in "clear" call deprecated with stack use
                 points = []
                 polygons = []
+                """
                 clear_screen(screen)  # Possibly redundant
 
             elif cLine == "save":
@@ -206,11 +237,14 @@ def parse_file(fname, screen, color):
                 if len(args) != 1:
                     raise ValueError("save call must be followed by 1 arg")
                 else:
+                    """
+                    # drawing in "save" call deprecated with stack use
                     clear_screen(screen)  # pretty sure it's necessary
                     if len(points) > 0:
                         draw_lines(points, screen, color)
                     if len(polygons) > 0:
                         draw_polygons(polygons, screen, color)
+                    """
                     save_extension(screen, args[0])
 
             elif cLine.startswith("#"):
