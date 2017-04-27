@@ -2,41 +2,90 @@
 push
 move
 250 250 0
+rotate
+y -10
+color
+255 255 255
+
 #HEAD
 push
 scale
-1 0.6 1
-rotate
-y -10
+1 0.7 1
+#Stack: Ov, H
 sphere
 0 0 0 200
 pop
+
 #EYE POSITIONS
 push
 move
-0 15 0
+0 20 -15
 color
-255 0 0
+255 69 0
+
 #LEFT EYE
 push
 move
 -100 0 0
 rotate
-y 80
+y 90
+#Stack: Ov, EyeP, EyeL
 sphere
 0 0 0 30
 pop
+
 #RIGHT EYE
 push
 move
 100 0 0
 rotate
-y 80
+y 90
+#Stack: Ov, EyeP, EyeR
 sphere
 0 0 0 30
 pop
 # - resetting after eyes
 pop
 color
+255 255 255
+
+#EAR POSITIONS
+push
+move
+0 80 0
+
+#LEFT EAR
+push
+move
+-180 0 40
+rotate
+z 50
+#Stack: Ov, EarP, EarL
+sphere
+0 0 0 40
+pop
+
+#RIGHT EAR
+push
+move
+165 0 40
+rotate
+z -50
+#Stack: Ov, EarP, EarR
+sphere
+0 0 0 40
+pop
+
+#MOUTH
+push
+color
 0 0 255
+move
+0 -200 0
+bezier
+-100 50 -67 17 67 17 100 50
+color
+255 255 255
+pop
+
 display
