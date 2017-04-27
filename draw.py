@@ -69,8 +69,15 @@ def draw_polygons(points, screen, color):
 
 
 def should_show(point0, point1, point2):
-    # print "calculating cull"
-    # return True
+    Ax = point1[0] - point0[0]  # x1 - x0
+    Ay = point1[1] - point0[1]  # y1 - y0
+    Bx = point2[0] - point0[0]  # x2 - x0
+    By = point2[1] - point0[1]  # y2 - y0
+    Nz = Ax*By - Ay*Bx
+    return Nz > 0
+
+
+def should_show_OLD(point0, point1, point2):
     A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
     B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
     Nz = A[0] * B[1] - A[1] * B[0]

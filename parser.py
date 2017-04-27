@@ -39,10 +39,10 @@ The commands are as follows:
         - takes 4 args (cx, cy, cz, r)
     bezier: calcs points for a bezier, transforms by the top of the stack,
         and draws it to the screen
-        - takes 8 args (x0, y0, x1, y1, rx0, ry0, rx1, ry1)
+        - takes 8 args (x0, y0, x1, y1, x2, y2, x3, y3)
     hermite: calcs points for a hermite, transforms by the top of the stack,
         and draws it to the screen
-        - takes 8 args (x0, y0, x1, y1, x2, y2, x3, y3)
+        - takes 8 args (x0, y0, x1, y1, rx0, ry0, rx1, ry1)
 
     box: calc polygons for a box, transforms by the top of the stack,
         and draws it to the screen
