@@ -2,36 +2,63 @@ from display import *
 from matrix import *
 from draw import *
 from transformOps import *
-import matrixOps
+from matrixOps import *
 import time
 
-# TODO: Update the command list
 
 """
 Goes through the file named filename and performs all of the actions
     listed in that file.
 
 The file follows the following format:
-    Every command is a single character that takes up a line
+    Every command is a single word that takes up a line
     Any command that requires arguments must have those arguments
-        in the 2nd line.
+        in the 2nd line, separated by spaces.
 
 The commands are as follows:
-    line: add a line to the edge matrix -
-        takes 6 arguemnts (x0, y0, z0, x1, y1, z1)
     scale: create a scale matrix,
-        then multiply the transform matrix by the scale matrix -
-        takes 3 arguments (sx, sy, sz)
+        then applies the transformation to the top of the transform stack
+        - takes 3 args (sx, sy, sz)
     move: create a translation matrix,
-        then multiply the transform matrix by the translation matrix -
-        takes 3 arguments (tx, ty, tz)
+        then applies the transformation to the top of the transform stack
+        - takes 3 args (tx, ty, tz)
     rotate: create a rotation matrix,
-        then multiply the transform matrix by the rotation matrix -
-        takes 2 arguments (axis, theta) axis should be x, y or z
+        then applies the transformation to the top of the transform stack
+        - takes 2 args (axis, theta); axis should be x, y or z
+
+    push: pushes a copy of the matrix currently topping the stack,
+        onto the stack
+    pop: removes the matrix currently topping the transform stack
+
+    line: calcs points for a line, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 6 args (x0, y0, z0, x1, y1, z1)
+
+    circle: calcs points for a circle, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 4 args (cx, cy, cz, r)
+    bezier: calcs points for a bezier, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 8 args (x0, y0, x1, y1, rx0, ry0, rx1, ry1)
+    hermite: calcs points for a hermite, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 8 args (x0, y0, x1, y1, x2, y2, x3, y3)
+
+    box: calc polygons for a box, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 6 args (x, y, z, width, height, depth)
+    sphere: calc polygons for a sphere, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 4 args (x, y, z, radius)
+    torus: calc polygons for a torus, transforms by the top of the stack,
+        and draws it to the screen
+        - takes 5 args (x, y, z, radius1, radius2)
+
     display: displays the screen with Image Magick
     save: saves the screen to a file -
-        takes 1 argument (file name)
-    quit: end parsing
+        - takes 1 argument (filename)
+    quit: ends parsing
+    #: comment
 
 Deprecated Calls (since stack version):
     ident
@@ -47,30 +74,17 @@ def parse_file(fname, screen, color):
     with open(fname, 'r') as script:
         keepReading = True
 
-        tStack = [matrixOps.createIdentity(4)]
+        tStack = [createIdentity(4)]
         # blank is used as a starting point for transformations
-        blank = matrixOps.createIdentity(4)
+        blank = createIdentity(4)
 
         while keepReading:
             line = script.readline()
             cLine = line.strip("\n").lower()
 
-            # --- LINE --- #
-
-            if cLine == "line":
-                args = script.readline().split(" ")
-                if len(args) != 6:
-                    raise ValueError("line call must be followed by 6 args")
-                else:
-                    points = []
-                    add_edge(points, [int(args[0]), int(args[1]), int(args[
-                             2])], [int(args[3]), int(args[4]), int(args[5])])
-                    points = matrixOps.multiply(tStack[-1], points)
-                    draw_lines(points, screen, color)
-
             # --- TRANSFORMATIONS --- #
 
-            elif cLine == "scale":
+            if cLine == "scale":
                 args = script.readline().split(" ")
                 if len(args) != 3:
                     raise ValueError(
@@ -82,7 +96,7 @@ def parse_file(fname, screen, color):
                 else:
                     tMat = scale(blank, int(
                         args[0]), int(args[1]), int(args[2]))
-                    tStack[-1] = matrixOps.multiply(tStack[-1], tMat)
+                    tStack[-1] = multiply(tStack[-1], tMat)
 
             elif cLine == "move":
                 args = script.readline().split(" ")
@@ -95,7 +109,7 @@ def parse_file(fname, screen, color):
                 else:
                     tMat = translate(blank, int(
                         args[0]), int(args[1]), int(args[2]))
-                    tStack[-1] = matrixOps.multiply(tStack[-1], tMat)
+                    tStack[-1] = multiply(tStack[-1], tMat)
 
             elif cLine == "rotate":
                 args = script.readline().split(" ")
@@ -107,7 +121,7 @@ def parse_file(fname, screen, color):
                     )
                 else:
                     tMat = rotate(blank, args[0], int(args[1]))
-                    tStack[-1] = matrixOps.multiply(tStack[-1], tMat)
+                    tStack[-1] = multiply(tStack[-1], tMat)
 
             # --- TRANFORMATION STACK --- #
 
@@ -120,6 +134,19 @@ def parse_file(fname, screen, color):
                 # Shouldn't be followed by any args
                 tStack.pop()
 
+            # --- LINE --- #
+
+            elif cLine == "line":
+                args = script.readline().split(" ")
+                if len(args) != 6:
+                    raise ValueError("line call must be followed by 6 args")
+                else:
+                    points = []
+                    add_edge(points, [int(args[0]), int(args[1]), int(args[
+                             2])], [int(args[3]), int(args[4]), int(args[5])])
+                    points = multiply(tStack[-1], points)
+                    draw_lines(points, screen, color)
+
             # --- CURVES --- #
 
             elif cLine == "circle":
@@ -130,7 +157,7 @@ def parse_file(fname, screen, color):
                     points = []
                     add_circle(points, int(args[0]), int(args[1]),
                                int(args[2]), int(args[3]), 1000)
-                    points = matrixOps.multiply(tStack[-1], points)
+                    points = multiply(tStack[-1], points)
                     draw_points(points, screen, color)
 
             elif cLine == "bezier":
@@ -142,7 +169,7 @@ def parse_file(fname, screen, color):
                     add_bezier(points, int(args[0]), int(args[1]),
                                int(args[2]), int(args[3]), int(args[4]),
                                int(args[5]), int(args[6]), int(args[7]), 1000)
-                    points = matrixOps.multiply(tStack[-1], points)
+                    points = multiply(tStack[-1], points)
                     draw_points(points, screen, color)
 
             elif cLine == "hermite":
@@ -154,7 +181,7 @@ def parse_file(fname, screen, color):
                     add_hermite(points, int(args[0]), int(args[1]),
                                 int(args[2]), int(args[3]), int(args[4]),
                                 int(args[5]), int(args[6]), int(args[7]), 1000)
-                    points = matrixOps.multiply(tStack[-1], points)
+                    points = multiply(tStack[-1], points)
                     draw_points(points, screen, color)
 
             # --- 3D SHAPES --- #
@@ -168,7 +195,7 @@ def parse_file(fname, screen, color):
                     add_box(polygons, int(args[0]), int(args[1]),
                             int(args[2]), int(args[3]), int(args[4]),
                             int(args[5]))
-                    polygons = matrixOps.multiply(tStack[-1], polygons)
+                    polygons = multiply(tStack[-1], polygons)
                     draw_polygons(polygons, screen, color)
 
             elif cLine == "sphere":
@@ -179,7 +206,7 @@ def parse_file(fname, screen, color):
                     polygons = []
                     add_sphere(polygons, int(args[0]), int(args[1]),
                                int(args[2]), int(args[3]), 20)  # adjust steps
-                    polygons = matrixOps.multiply(tStack[-1], polygons)
+                    polygons = multiply(tStack[-1], polygons)
                     draw_polygons(polygons, screen, color)
 
             elif cLine == "torus":
@@ -190,7 +217,7 @@ def parse_file(fname, screen, color):
                     polygons = []
                     add_torus(polygons, int(args[0]), int(args[1]),
                               int(args[2]), int(args[3]), int(args[4]), 20)
-                    polygons = matrixOps.multiply(tStack[-1], polygons)
+                    polygons = multiply(tStack[-1], polygons)
                     draw_polygons(polygons, screen, color)
 
             # --- IMAGE CMDS --- #
