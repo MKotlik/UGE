@@ -94,8 +94,8 @@ def parse_file(fname, screen, color):
                         "cannot perform operation on empty transform stack"
                     )
                 else:
-                    tMat = scale(blank, int(
-                        args[0]), int(args[1]), int(args[2]))
+                    tMat = scale(blank, float(
+                        args[0]), float(args[1]), float(args[2]))
                     tStack[-1] = multiply(tStack[-1], tMat)
 
             elif cLine == "move":
@@ -107,8 +107,8 @@ def parse_file(fname, screen, color):
                         "cannot perform operation on empty transform stack"
                     )
                 else:
-                    tMat = translate(blank, int(
-                        args[0]), int(args[1]), int(args[2]))
+                    tMat = translate(blank, float(
+                        args[0]), float(args[1]), float(args[2]))
                     tStack[-1] = multiply(tStack[-1], tMat)
 
             elif cLine == "rotate":
@@ -120,7 +120,7 @@ def parse_file(fname, screen, color):
                         "cannot perform operation on empty transform stack"
                     )
                 else:
-                    tMat = rotate(blank, args[0], int(args[1]))
+                    tMat = rotate(blank, args[0], float(args[1]))
                     tStack[-1] = multiply(tStack[-1], tMat)
 
             # --- TRANFORMATION STACK --- #

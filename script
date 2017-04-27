@@ -1,7 +1,42 @@
-#HEAD
+#OVERALL POSITION
 push
 move
-0 250 0
-bezier
-0 0 20 150 380 150 400 0
+250 250 0
+#HEAD
+push
+scale
+1 0.6 1
+rotate
+y -10
+sphere
+0 0 0 200
+pop
+#EYE POSITIONS
+push
+move
+0 15 0
+color
+255 0 0
+#LEFT EYE
+push
+move
+-100 0 0
+rotate
+y 80
+sphere
+0 0 0 30
+pop
+#RIGHT EYE
+push
+move
+100 0 0
+rotate
+y 80
+sphere
+0 0 0 30
+pop
+# - resetting after eyes
+pop
+color
+0 0 255
 display
