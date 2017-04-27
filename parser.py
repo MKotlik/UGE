@@ -212,13 +212,23 @@ def parse_file(fname, screen, color):
             elif cLine == "torus":
                 args = script.readline().split(" ")
                 if len(args) != 5:
-                    raise ValueError("sphere call must be followed by 5 args")
+                    raise ValueError("torus call must be followed by 5 args")
                 else:
                     polygons = []
                     add_torus(polygons, int(args[0]), int(args[1]),
                               int(args[2]), int(args[3]), int(args[4]), 20)
                     polygons = multiply(tStack[-1], polygons)
                     draw_polygons(polygons, screen, color)
+
+            # --- COLOR CMDS --- #
+
+            elif cLine == "color":
+                # WARNING: this call is likely UNSUPPORTED by other programs
+                args = script.readline().split(" ")
+                if len(args) != 3:
+                    raise ValueError("color call must be followed by 3 args")
+                else:
+                    color = [args[0], args[1], args[2]]
 
             # --- IMAGE CMDS --- #
 

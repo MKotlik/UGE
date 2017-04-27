@@ -214,22 +214,19 @@ def add_torus(matrix, cx, cy, cz, r0, r1, steps):
 
 
 def generate_torus(matrix, cx, cy, cz, r0, r1, steps):
-    steps = float(steps)
+    step = 1.0 / steps
+    points = []
     rot = 0
-    cirPoints = []
-    while rot <= steps:
-        cirStep = 0
-        while cirStep <= steps:
-            rotAng = 2 * rot / steps * math.pi
-            cirAng = 2 * cirStep / steps * math.pi
-            X = (r0 * math.cos(rotAng) + r1) * math.cos(cirAng) + cx
-            Y = r0 * math.sin(rotAng) + cy
-            Z = (r0 * math.cos(rotAng) + r1) * -1 * math.sin(cirAng) + cz
-            # add_point(matrix, [X, Y, Z])
-            cirPoints.append([X, Y, Z])
-            cirStep += 1
-        rot += 1
-    return cirPoints
+    while rot <= 1 + step:
+        circ = 0
+        while circ <= 1 + step:
+            x = (r0 * math.cos(2*math.pi * circ) + r1) * math.cos(2*math.pi * rot) + cx
+            y = r0 * math.sin(2*math.pi * circ) + cy
+            z = (r0 * math.cos(2*math.pi * circ) + r1) * -1 * math.sin(2*math.pi * rot) + cz
+            points.append([x, y, z])
+            circ += step
+        rot += step
+    return points
 
 
 # +++++++++++++++ #
