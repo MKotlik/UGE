@@ -1,7 +1,7 @@
 #OVERALL POSITION
 push
 move
-250 250 0
+250 200 0
 rotate
 y -10
 color
@@ -75,17 +75,75 @@ z -50
 sphere
 0 0 0 40
 pop
+# - popping ear positioning
+pop
 
-#MOUTH
+#MOUTH-SETUP
 push
 color
 0 0 255
 move
-0 -200 0
+0 -120 0
+
+#MOUTH-LINE1
+#Stack: Ov, Ms
 bezier
 -100 50 -67 17 67 17 100 50
+
+#MOUTH-LINE2
+push
+move
+0 1 0
+#Stack: Ov, Ms, M2
+bezier
+-100 50 -67 18 67 18 100 50
+
+#MOUTH-LINE3
+push
+move
+0 1 0
+#Stack: Ov, Ms, M2, M3
+bezier
+-100 50 -67 19 67 19 100 50
+
+#MOUTH-RESETTING
+pop
+pop
+pop
 color
 255 255 255
+
+#ANTENNA-1
+push
+move
+0 140 -100
+rotate
+y 20
+rotate
+z -20
+#Stack: Ov, A1
+box
+0 100 0 10 100 10
+
+#ANTENNA-2
+push
+move
+0 100 0
+#Stack: Ov, A1, A2
+box
+0 10 10 80 10 10
+
+#ANTENNA-SPHERE
+push
+move
+105 0 0
+#Stack: Ov, A1, A2, As
+sphere
+0 0 0 30
+
+#RETUNING TO Ov
+pop
+pop
 pop
 
 display

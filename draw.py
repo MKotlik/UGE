@@ -65,7 +65,8 @@ def draw_polygons(points, screen, color):
                       [1], points[i][0], points[i][1], screen, color)
             numShowed += 1
         i += 3
-    # print "Showed: " + str(numShowed) + "; Culled: " + str((len(points) / 3 - numShowed))
+    # print "Showed: " + str(numShowed) + "; Culled: " + str((len(points) / 3
+    # - numShowed))
 
 
 def should_show(point0, point1, point2):
@@ -73,7 +74,7 @@ def should_show(point0, point1, point2):
     Ay = point1[1] - point0[1]  # y1 - y0
     Bx = point2[0] - point0[0]  # x2 - x0
     By = point2[1] - point0[1]  # y2 - y0
-    Nz = Ax*By - Ay*Bx
+    Nz = Ax * By - Ay * Bx
     return Nz > 0
 
 
@@ -227,9 +228,11 @@ def generate_torus(matrix, cx, cy, cz, r0, r1, steps):
     while rot <= 1 + step:
         circ = 0
         while circ <= 1 + step:
-            x = (r0 * math.cos(2*math.pi * circ) + r1) * math.cos(2*math.pi * rot) + cx
-            y = r0 * math.sin(2*math.pi * circ) + cy
-            z = (r0 * math.cos(2*math.pi * circ) + r1) * -1 * math.sin(2*math.pi * rot) + cz
+            x = (r0 * math.cos(2 * math.pi * circ) + r1) * \
+                math.cos(2 * math.pi * rot) + cx
+            y = r0 * math.sin(2 * math.pi * circ) + cy
+            z = (r0 * math.cos(2 * math.pi * circ) + r1) * - \
+                1 * math.sin(2 * math.pi * rot) + cz
             points.append([x, y, z])
             circ += step
         rot += step
@@ -258,7 +261,6 @@ def add_circle(matrix, cX, cY, cZ, r, steps):
 
 
 def add_hermite(matrix, x0, y0, x1, y1, mX0, mY0, mX1, mY1, steps):
-    print "hermite"
     # I'm not sure if im using this correctly...
     hermite_mat = [[2, -3, 0, 1], [-2, 3, 0, 0], [1, -2, 1, 0], [1, -1, 0, 0]]
     x_base = [[x0, x1, mX0, mX1]]
@@ -267,7 +269,6 @@ def add_hermite(matrix, x0, y0, x1, y1, mX0, mY0, mX1, mY1, steps):
 
 
 def add_bezier(matrix, x0, y0, x1, y1, x2, y2, x3, y3, steps):
-    print "bezier"
     # I'm not sure if im using this correctly...
     bezier_mat = [[-1, 3, -3, 1], [3, -6, 3, 0], [-3, 3, 0, 0], [1, 0, 0, 0]]
     x_base = [[x0, x1, x2, x3]]

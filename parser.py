@@ -133,6 +133,8 @@ def parse_file(fname, screen, color):
             elif cLine == "pop":
                 # Shouldn't be followed by any args
                 tStack.pop()
+                if len(tStack) == 0:
+                    print "Parser Warning: stack is empty"
 
             # --- LINE --- #
 
