@@ -65,7 +65,7 @@ def draw_polygons(points, screen, color):
                       [1], points[i][0], points[i][1], screen, color)
             numShowed += 1
         i += 3
-    print "Showed: " + str(numShowed) + "; Culled: " + str((len(points) / 3 - numShowed))
+    # print "Showed: " + str(numShowed) + "; Culled: " + str((len(points) / 3 - numShowed))
 
 
 def should_show(point0, point1, point2):
@@ -93,28 +93,28 @@ def add_box(matrix, x, y, z, width, height, depth):
     z1 = z - depth
 
     # Front Face
-    add_polygon(matrix, [x1, y, z], [x, y, z], [x, y1, z])
-    add_polygon(matrix, [x1, y, z], [x, y1, z], [x1, y1, z])
+    add_polygon(matrix, [x, y, z], [x1, y1, z], [x1, y, z])
+    add_polygon(matrix, [x, y, z], [x, y1, z], [x1, y1, z])
 
     # Back Face
-    add_polygon(matrix, [x, y, z1], [x1, y1, z1], [x, y1, z1])
-    add_polygon(matrix, [x, y, z1], [x1, y, z1], [x1, y1, z1])
+    add_polygon(matrix, [x1, y, z1], [x, y1, z1], [x, y, z1])
+    add_polygon(matrix, [x1, y, z1], [x1, y1, z1], [x, y1, z1])
 
     # Left Face
-    add_polygon(matrix, [x, y, z], [x, y, z1], [x, y1, z1])
-    add_polygon(matrix, [x, y, z], [x, y1, z1], [x, y1, z])
+    add_polygon(matrix, [x, y, z1], [x, y1, z], [x, y, z])
+    add_polygon(matrix, [x, y, z1], [x, y1, z1], [x, y1, z])
 
     # Right Face
-    add_polygon(matrix, [x1, y, z1], [x1, y, z], [x1, y1, z])
-    add_polygon(matrix, [x1, y, z1], [x1, y1, z], [x1, y1, z1])
+    add_polygon(matrix, [x1, y, z], [x1, y1, z1], [x1, y, z1])
+    add_polygon(matrix, [x1, y, z], [x1, y1, z], [x1, y1, z1])
 
     # Top Face
-    add_polygon(matrix, [x1, y, z1], [x, y, z], [x1, y, z])
-    add_polygon(matrix, [x1, y, z1], [x, y, z1], [x, y, z])
+    add_polygon(matrix, [x1, y, z], [x1, y, z1], [x, y, z1])
+    add_polygon(matrix, [x1, y, z], [x, y, z1], [x, y, z])
 
     # Bottom Face
-    add_polygon(matrix, [x1, y1, z], [x, y1, z], [x, y1, z1])
-    add_polygon(matrix, [x1, y1, z], [x1, y, z1], [x1, y1, z1])
+    add_polygon(matrix, [x, y1, z], [x1, y1, z1], [x1, y1, z])
+    add_polygon(matrix, [x, y1, z], [x, y1, z1], [x1, y1, z1])
 
 
 def add_box_edges(matrix, x, y, z, width, height, depth):
