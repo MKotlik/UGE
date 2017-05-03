@@ -1,6 +1,8 @@
-run: main.py display.py draw.py matrix.py parser.py
-	python main.py
+test: script.mdl lex.py mainMDL.py matrix.py mdl.py display.py draw.py matrixOps.py transformOps.py yacc.py
+	python mainMDL.py script.mdl
 
 clean:
-	rm *.pyc
-	rm *~
+	rm *pyc *out parsetab.py
+
+clear:
+	rm *pyc *out parsetab.py *ppm
