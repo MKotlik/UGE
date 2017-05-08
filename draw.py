@@ -78,13 +78,6 @@ def should_show(point0, point1, point2):
     return Nz > 0
 
 
-def should_show_OLD(point0, point1, point2):
-    A = [point1[0] - point0[0], point1[1] - point0[1], point1[2] - point0[2]]
-    B = [point2[0] - point0[0], point2[1] - point0[1], point2[2] - point0[2]]
-    Nz = A[0] * B[1] - A[1] * B[0]
-    return Nz > 0
-
-
 # ++++++++++++++++++ #
 # 3D SHAPE FUNCTIONS #
 # ++++++++++++++++++ #

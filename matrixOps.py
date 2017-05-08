@@ -16,6 +16,10 @@ We are not modifying in place; we are returning a new matrix
 # Returns string representation of matrix
 # Table will be padded and columns separated by pipes
 def toString(matrix):
+    """
+    Returns string representation of matrix
+    Table will be padded and columns separated by pipes
+    """
     if len(matrix) == 0 or len(matrix[0]) == 0:
         return str(matrix)
     else:
@@ -40,11 +44,13 @@ def toString(matrix):
 
 # Prints the matrix
 def printM(matrix):
+    """Prints the matrix"""
     print toString(matrix)
 
 
 # Converts matrix to an int matrix, rounds all floats
 def toIntMatrix(matrix):
+    """Converts matrix to an int matrix, rounds all floats"""
     intMatrix = []
     for col in matrix:
         intCol = []
@@ -59,8 +65,13 @@ def toIntMatrix(matrix):
 # ++++++++++++++++++++++++ #
 
 
-# General matrix multiplication (determines operands):
+# General matrix multiplication (determines operands)
 def multiply(operandA, matrix):
+    """General matrix multiplication (determines operands)
+    Args: int/float/long/list operandA, list matrix
+    Returns: multiplication result
+    Throws: error if operandA isn't an accepted type
+    """
     if type(operandA) is int:
         return scalarMult(operandA, matrix)
     elif type(operandA) is float:
@@ -76,6 +87,7 @@ def multiply(operandA, matrix):
 
 # Scalar Multiplication
 def scalarMult(scalar, matrix):
+    """Matrix multiplication by a scalar"""
     # Check that matrix isn't empty
     if (len(matrix) == 0 or len(matrix[0]) == 0):
         raise ValueError(
@@ -91,6 +103,7 @@ def scalarMult(scalar, matrix):
 
 # Matrix Multiplication
 def matrixMult(matrixA, matrixB):
+    """Matrix by matrix multiplication"""
     # Check that both matrices are not empty
     if (len(matrixA) == 0 or len(matrixA[0]) == 0 or
             len(matrixB) == 0 or len(matrixB[0]) == 0):
@@ -124,6 +137,7 @@ def matrixMult(matrixA, matrixB):
 
 # By default, gets left identity matrix
 def getIdentity(matrix):
+    """Creates and returns the left identity matrix for given matrix"""
     try:
         return getLeftIdentity(matrix)
     except ValueError:
@@ -134,6 +148,7 @@ def getIdentity(matrix):
 # Create the left identity matrix for a given matrix
 # Aka the identity matrix that would be the left operand
 def getLeftIdentity(matrix):
+    """Creates and returns the left identity matrix for given matrix"""
     if (len(matrix) == 0 or len(matrix[0]) == 0):
         raise ValueError("matrixOps.getLeftIdentity() cannot create identity "
                          "for an empty matrix")
@@ -144,6 +159,7 @@ def getLeftIdentity(matrix):
 # Create the right identity matrix for a given matrix
 # Aka the identity matrix that would be the right operand
 def getRightIdentity(matrix):
+    """Creates and returns the right identity matrix for given matrix"""
     if (len(matrix) == 0 or len(matrix[0]) == 0):
         raise ValueError("matrixOps.getRightIdentity() cannot create identity "
                          "for an empty matrix")
