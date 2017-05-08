@@ -70,15 +70,20 @@ def run(filename):
                 print "UGE Error: rotate command can't be applied to empty stack"
                 print "\t Failing command: " + " ".join(command)
                 break
-            tMat = scale(blank, command[1], float(command[2]))
+            tMat = rotate(blank, command[1], float(command[2]))
             tStack[-1] = multiply(tStack[-1], tMat)
 
         # -- 2D SHAPE COMMANDS -- #
 
         elif command[0] == "line":
             points = []
+            """
+            # Version for constants
             add_edge(points, [int(command[2]), int(command[3]), int(command[
                      4])], [int(command[6]), int(command[7]), int(command[8])])
+            """
+            add_edge(points, [int(command[1]), int(command[2]), int(command[
+                     3])], [int(command[4]), int(command[5]), int(command[6])])
             points = multiply(tStack[-1], points)
             draw_lines(points, screen, color)
 
@@ -86,23 +91,39 @@ def run(filename):
 
         elif command[0] == "box":
             polygons = []
+            """
+            # Version for constants
             add_box(polygons, int(command[2]), int(command[3]),
                     int(command[4]), int(command[5]), int(command[6]),
                     int(command[7]))
+            """
+            add_box(polygons, int(command[1]), int(command[2]),
+                    int(command[3]), int(command[4]), int(command[5]),
+                    int(command[6]))
             polygons = multiply(tStack[-1], polygons)
             draw_polygons(polygons, screen, color)
 
         elif command[0] == "sphere":
             polygons = []
+            """
+            # Version for constants
             add_sphere(polygons, int(command[2]), int(command[3]),
                        int(command[4]), int(command[5]), 20)  # adjust steps
+            """
+            add_sphere(polygons, int(command[1]), int(command[2]),
+                       int(command[3]), int(command[4]), 20)  # adjust steps
             polygons = multiply(tStack[-1], polygons)
             draw_polygons(polygons, screen, color)
 
         elif command[0] == "torus":
             polygons = []
+            """
+            # Version for constants
             add_torus(polygons, int(command[2]), int(command[3]),
                       int(command[4]), int(command[5]), int(command[6]), 20)
+            """
+            add_torus(polygons, int(command[1]), int(command[2]),
+                      int(command[3]), int(command[4]), int(command[5]), 20)
             polygons = multiply(tStack[-1], polygons)
             draw_polygons(polygons, screen, color)
 
