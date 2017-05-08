@@ -4,8 +4,10 @@ from matrix import *
 from draw import *
 from matrixOps import *
 from transformOps import *
+import time
 
 # NOTE: Apparently curves are unsupported in MDL?
+
 
 def run(filename):
     """
@@ -29,6 +31,8 @@ def run(filename):
     blank = createIdentity(4)
     # step = 0.1  # Allow setting a global step?
 
+    # Constants/variables will be saved in a dict
+
     for command in commands:
 
         # -- STACK COMMANDS -- #
@@ -47,6 +51,7 @@ def run(filename):
             if len(tStack) == 0:
                 print "UGE Error: scale command can't be applied to empty stack"
                 print "\t Failing command: " + " ".join(command)
+                break
             tMat = scale(blank, float(
                 command[1]), float(command[2]), float(command[3]))
             tStack[-1] = multiply(tStack[-1], tMat)
@@ -55,6 +60,7 @@ def run(filename):
             if len(tStack) == 0:
                 print "UGE Error: move command can't be applied to empty stack"
                 print "\t Failing command: " + " ".join(command)
+                break
             tMat = translate(blank, float(
                 command[1]), float(command[2]), float(command[3]))
             tStack[-1] = multiply(tStack[-1], tMat)
@@ -63,6 +69,7 @@ def run(filename):
             if len(tStack) == 0:
                 print "UGE Error: rotate command can't be applied to empty stack"
                 print "\t Failing command: " + " ".join(command)
+                break
             tMat = scale(blank, command[1], float(command[2]))
             tStack[-1] = multiply(tStack[-1], tMat)
 
@@ -98,3 +105,13 @@ def run(filename):
                       int(command[4]), int(command[5]), int(command[6]), 20)
             polygons = multiply(tStack[-1], polygons)
             draw_polygons(polygons, screen, color)
+
+        # -- IMAGE COMMANDS -- #
+
+        elif command[0] == "display":
+            display(screen)
+            time.sleep(0.5)
+
+        elif command[0] == "save":
+            print "UGE: saving image with as " + command[1]
+            save_extension(screen, command[1])
