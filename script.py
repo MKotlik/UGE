@@ -5,6 +5,7 @@ from draw import *
 from matrixOps import *
 from transformOps import *
 
+# NOTE: Apparently curves are unsupported in MDL?
 
 def run(filename):
     """
@@ -62,62 +63,38 @@ def run(filename):
             if len(tStack) == 0:
                 print "UGE Error: rotate command can't be applied to empty stack"
                 print "\t Failing command: " + " ".join(command)
-            tMat = scale(blank, float(
-                command[1]), float(command[2]))
+            tMat = scale(blank, command[1], float(command[2]))
             tStack[-1] = multiply(tStack[-1], tMat)
 
         # -- 2D SHAPE COMMANDS -- #
 
         elif command[0] == "line":
             points = []
-            add_edge(points, [int(args[0]), int(args[1]), int(args[
-                     2])], [int(args[3]), int(args[4]), int(args[5])])
+            add_edge(points, [int(command[2]), int(command[3]), int(command[
+                     4])], [int(command[6]), int(command[7]), int(command[8])])
             points = multiply(tStack[-1], points)
             draw_lines(points, screen, color)
 
-        elif command[0] == "circle":
-            points = []
-            add_circle(points, int(args[0]), int(args[1]),
-                       int(args[2]), int(args[3]), 1000)
-            points = multiply(tStack[-1], points)
-            draw_points(points, screen, color)
-
-        elif command[0] == "bezier":
-            points = []
-            add_bezier(points, int(args[0]), int(args[1]),
-                       int(args[2]), int(args[3]), int(args[4]),
-                       int(args[5]), int(args[6]), int(args[7]), 1000)
-            points = multiply(tStack[-1], points)
-            draw_points(points, screen, color)
-
-        elif command[0] == "hermite":
-            points = []
-            add_hermite(points, int(args[0]), int(args[1]),
-                        int(args[2]), int(args[3]), int(args[4]),
-                        int(args[5]), int(args[6]), int(args[7]), 1000)
-            points = multiply(tStack[-1], points)
-            draw_points(points, screen, color)
-
         # -- 3D SHAPE COMMANDS -- #
 
-    elif command[0] == "box":
-        polygons = []
-        add_box(polygons, int(args[0]), int(args[1]),
-                int(args[2]), int(args[3]), int(args[4]),
-                int(args[5]))
-        polygons = multiply(tStack[-1], polygons)
-        draw_polygons(polygons, screen, color)
+        elif command[0] == "box":
+            polygons = []
+            add_box(polygons, int(command[2]), int(command[3]),
+                    int(command[4]), int(command[5]), int(command[6]),
+                    int(command[7]))
+            polygons = multiply(tStack[-1], polygons)
+            draw_polygons(polygons, screen, color)
 
-    elif command[0] == "sphere":
-        polygons = []
-        add_sphere(polygons, int(args[0]), int(args[1]),
-                   int(args[2]), int(args[3]), 20)  # adjust steps
-        polygons = multiply(tStack[-1], polygons)
-        draw_polygons(polygons, screen, color)
+        elif command[0] == "sphere":
+            polygons = []
+            add_sphere(polygons, int(command[2]), int(command[3]),
+                       int(command[4]), int(command[5]), 20)  # adjust steps
+            polygons = multiply(tStack[-1], polygons)
+            draw_polygons(polygons, screen, color)
 
-    elif command[0] == "torus":
-        polygons = []
-        add_torus(polygons, int(args[0]), int(args[1]),
-                  int(args[2]), int(args[3]), int(args[4]), 20)
-        polygons = multiply(tStack[-1], polygons)
-        draw_polygons(polygons, screen, color)
+        elif command[0] == "torus":
+            polygons = []
+            add_torus(polygons, int(command[2]), int(command[3]),
+                      int(command[4]), int(command[5]), int(command[6]), 20)
+            polygons = multiply(tStack[-1], polygons)
+            draw_polygons(polygons, screen, color)
