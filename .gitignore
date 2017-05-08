@@ -1,3 +1,5 @@
 *.ppm
 *.pyc
 *.png
+parser.out
+parsetab.py
