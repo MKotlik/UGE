@@ -126,13 +126,12 @@ def t_CO(t):
     r":"
     return t
 
-
 lex.lex()
 
-# ----------------------------------------------------------
+#----------------------------------------------------------
 
 commands = []
-symbols = []
+symbols = {}
 
 
 def p_stuff(p):
@@ -144,6 +143,22 @@ def p_stuff(p):
 def p_statement_comment(p):
     'statement : COMMENT'
     pass
+
+
+def p_statement_frames(p):
+    """statement : FRAMES INT"""
+    commands.append(p[1:])
+
+
+def p_statement_basename(p):
+    """statement : BASENAME TEXT"""
+    commands.append(p[1:])
+
+
+def p_statement_vary(p):
+    """statement : VARY SYMBOL INT INT NUMBER NUMBER"""
+    commands.append(p[1:])
+    symbols[p[2]] = ['knob', 0]
 
 
 def p_statement_stack(p):
@@ -181,7 +196,8 @@ def p_statement_knobs(p):
                  | SET_KNOBS NUMBER"""
     commands.append(tuple(p[1:]))
     if p[1] == "set":
-        symbols.append(("knob", p[2]))
+        #symbols.append(("knob", p[2]))
+        symbols[p[2]] = ['knob', 0]
 
 
 def p_statement_sphere(p):
@@ -242,7 +258,7 @@ def p_statement_move(p):
         commands.append(tuple(p[1:] + [None]))
     else:
         commands.append(tuple(p[1:]))
-        symbols.append(("knob", p[5]))
+        symbols[p[5]] = ['knob', 0]
 
 
 def p_statement_scale(p):
@@ -252,7 +268,7 @@ def p_statement_scale(p):
         commands.append(tuple(p[1:] + [None]))
     else:
         commands.append(tuple(p[1:]))
-        symbols.append(("knob", p[5]))
+        symbols[p[5]] = ['knob', 0]
 
 
 def p_statement_rotate(p):
@@ -262,7 +278,7 @@ def p_statement_rotate(p):
         commands.append(tuple(p[1:] + [None]))
     else:
         commands.append(tuple(p[1:]))
-        symbols.append(("knob", p[4]))
+        symbols[p[4]] = ['knob', 0]
 
 
 def p_SYMBOL(p):
@@ -284,6 +300,8 @@ def p_NUMBER(p):
 
 yacc.yacc()
 
+from copy import deepcopy
+
 
 def parseFile(filename):
     """
@@ -296,16 +314,16 @@ def parseFile(filename):
     global commands
     global symbols
     commands = []
-    symbols = []
+    symbols = {}
     try:
         f = open(filename, "r")
         for line in f.readlines():
             line = line.strip()
             yacc.parse(line)
         f.close()
-        result = (commands[:], symbols[:])
+        result = (commands[:], deepcopy(symbols))
         commands = []
-        symbols = []
+        symbols = {}
         return result
     except IOError:
         return ()
