@@ -167,9 +167,21 @@ def third_pass(commands, symbols, num_frames, variables, basename):
             elif command[0] == "pop":
                 tStack.pop()
                 if len(tStack) == 0:
-                    print "UGE Warning: Transformation stack is empty"
+                    print format_error(command, "UGE Warning: Transformation stack is empty")
+
+
+            # --- KNOB COMMANDS --#
+
+            elif command[0] == "set":
+                symbols[command[1]] = command[2]
+
+            elif command[0] = "setknobs":
+                for knob in symbols:
+                    symbols[knob] = command[1]
 
             # -- TRANSFORMATION COMMANDS -- #
+
+            # NOTE: need to test whether adding knob to symbol table, automatically adds it to the command args
 
             elif command[0] == "scale":
                 if len(tStack) == 0:
