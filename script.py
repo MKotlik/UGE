@@ -8,6 +8,9 @@ import time
 
 # NOTE: Apparently curves are unsupported in MDL?
 
+# GLOBAL SETTINGS:
+DEBUG = False
+
 
 """======== first_pass( commands, symbols ) ==========
   Checks the commands array for any animation commands
@@ -23,7 +26,28 @@ import time
   jdyrlandweaver
   ==================== """
 def first_pass( commands ):
-    pass
+    frames = -1  # -1 by default for error checking
+    basename = None
+    vary_indices = []  # Command list positions of vary cmds
+
+    for i in range(len(commands)):
+        command = commands[i]
+        if command[0] == "frames":
+            frames = command[1]
+        elif command[0] == "basename":
+            basename = command[1]
+        elif command[0] == "vary":
+            if frames == -1:
+                print "UGE Error: vary command used without frames command"
+                return (false, frames, basename, vary_indices)
+            vary_indices.append(i)
+
+    if frames != -1 and basename = None:
+        basename = "animation"
+        print 'UGE Notice: user didn\'t set basename, defaulting to "animation"'
+    if frames == -1:
+        frames = 0
+    return (true, frames, basename, vary_indices)
 
 
 """======== second_pass( commands ) ==========
@@ -40,26 +64,13 @@ def first_pass( commands ):
   dictionary corresponding to the given knob with the
   appropirate value.
   ===================="""
-def second_pass( commands, num_frames ):
+def second_pass( commands, num_frames, vary_indices ):
+    for i in vary_indices:
+        pass
     pass
 
 
-def run(filename):
-    """
-    This function runs an mdl script
-    """
-    color = [255, 255, 255]
-
-    print "UGE: Parsing Started"
-    p = mdl.parseFile(filename)
-    print "UGE: Parsing Completed"
-
-    if p:
-        (commands, symbols) = p
-    else:
-        print "UGE Error: Parsing Failed"
-        return
-
+def third_pass( commands, num_frames, var_dict, basename):
     screen = new_screen()
     tStack = [createIdentity(4)]
     # blank is used as a starting point for transformations
@@ -169,5 +180,40 @@ def run(filename):
             time.sleep(0.5)
 
         elif command[0] == "save":
-            print "UGE: saving image with as " + command[1]
+            print "UGE: saving imappge with as " + command[1]
             save_extension(screen, command[1])
+
+
+
+def run(filename):
+    """
+    This function runs an mdl script
+    """
+    color = [255, 255, 255]
+
+    print "UGE: Parsing Started"
+    p = mdl.parseFile(filename)
+    print "UGE: Parsing Completed"
+
+    if p:
+        (commands, symbols) = p
+    else:
+        print "UGE Error: Parsing Failed"
+        return
+
+    if DEBUG:
+        print commands
+        print "================"
+        print symbols
+        return
+
+    # first_pass, reads through command list and returns number of frames, basename,
+    #     and a list of the indices of the vary cmds within the command list
+    (first_status, frames, basename, vary_indices) = first_pass(commands)
+    if first_status == False: # If frames or vary were used improperly, exit
+        return
+
+    # second_pass, reads through command list and returns a list of variable dictionaries
+    #     per frame
+    (second_status, variable_dict) = second_pass(commands, frames, vary_indices)
+    # third_pass(commands, num...)
