@@ -65,12 +65,26 @@ def first_pass( commands ):
   appropirate value.
   ===================="""
 def second_pass( commands, num_frames, vary_indices ):
+    variables = [{}] * num_frames  # Optimize by avoiding resizing
+    # set first frame to start_val
+    # modify subsequent frames by ((end_val - start_val) / (frame diffs))
     for i in vary_indices:
-        pass
-    pass
+        vary = commands[i]
+        # NOTE: vary args might be strings rather than nums
+        # set diff of knob btwn frames to:
+        #   (end_val - start_val) / float(end_frame - start_frame)
+        v_diff = (vary[5] - vary[4]) / float(vary[3] - vary[2])
+        # set knob for each frame from start_frame to end_frame, inclusive
+        for frameN in range(vary[2], vary[3] + 1):
+            # set value of knob in dict corresponding to current frame to:
+            #   v_diff * cur_frame + start_val
+            # vary[1] is the knob name
+            variables[frameN][vary[1]] = v_diff * frameN + vary[4]
+        # NOTE: should I leave the frames after end_frame untouched?
+    return variables
 
 
-def third_pass( commands, num_frames, var_dict, basename):
+def third_pass( commands, num_frames, variables, basename):
     screen = new_screen()
     tStack = [createIdentity(4)]
     # blank is used as a starting point for transformations
@@ -215,5 +229,8 @@ def run(filename):
 
     # second_pass, reads through command list and returns a list of variable dictionaries
     #     per frame
-    (second_status, variable_dict) = second_pass(commands, frames, vary_indices)
+    # Checking for vary instead of frame number, b/c could have a static gif
+    if len(vary_indices) > 0:
+        (second_status, variable_dict) = second_pass(commands, frames, vary_indices)
+
     # third_pass(commands, num...)
