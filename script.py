@@ -35,18 +35,20 @@ def run(filename):
         print symbols
         return
 
-    # first_pass, reads through command list and returns number of frames, basename,
-    #     and a list of the indices of the vary cmds within the command list
+    # first_pass, reads through command list and returns number of frames,
+    #   basename, and a list of the indices of the vary
+    #   cmds within the command list
     (first_status, frames, basename, vary_indices) = first_pass(commands)
-    if first_status == False: # If frames or vary were used improperly, exit
+    if first_status == False:  # If frames or vary were used improperly, exit
         return
 
-    # second_pass, reads through command list and returns a list of variable dictionaries
-    #     per frame
+    # second_pass, reads through command list and returns a list of
+    # variable dictionaries per frame
     # Checking for vary instead of frame number, b/c could have a static gif
     if len(vary_indices) > 0:
-        (second_status, variable_dict) = second_pass(commands, frames, vary_indices)
-    if second_status == False: # If vary was used improperly, exit
+        (second_status, variable_dict) = second_pass(
+            commands, frames, vary_indices)
+    if second_status == False:  # If vary was used improperly, exit
         return
 
     # third_pass, iterates over the entire command list and creates each frame
@@ -66,7 +68,9 @@ def run(filename):
   with the name being used.
   jdyrlandweaver
   ==================== """
-def first_pass( commands ):
+
+
+def first_pass(commands):
     frames = -1  # -1 by default for error checking
     basename = None
     vary_indices = []  # Command list positions of vary cmds
@@ -74,7 +78,7 @@ def first_pass( commands ):
     for i in range(len(commands)):
         command = commands[i]
         if command[0] == "frames":
-            frames = command[ 1]
+            frames = command[1]
         elif command[0] == "basename":
             basename = command[1]
         elif command[0] == "vary":
@@ -113,7 +117,9 @@ def first_pass( commands ):
     - returns a tuple, where the first element is a boolean status, and the
         second element is the variable list
   ===================="""
-def second_pass( commands, num_frames, vary_indices ):
+
+
+def second_pass(commands, num_frames, vary_indices):
     variables = [{}] * num_frames  # Optimize by avoiding resizing
     # set first frame to start_val
     # modify subsequent frames by ((end_val - start_val) / (frame diffs))
@@ -153,7 +159,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
 
     # Iterate over frames
     for frame_num in range(num_frames):
-        # Set up knobs in symbol table
+        # Set up knobs in symbol table (symbols[knob] = value)
         for knob_name in variables[frame_num]:
             symbols[knob_name] = variables[frame_num][knob_name]
 
@@ -169,7 +175,6 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                 if len(tStack) == 0:
                     print format_error(command, "UGE Warning: Transformation stack is empty")
 
-
             # --- KNOB COMMANDS --#
 
             elif command[0] == "set":
@@ -181,12 +186,12 @@ def third_pass(commands, symbols, num_frames, variables, basename):
 
             # -- TRANSFORMATION COMMANDS -- #
 
-            # NOTE: need to test whether adding knob to symbol table, automatically adds it to the command args
+            # NOTE: need to test whether adding knob to symbol table,
+            # automatically adds it to the command args
 
             elif command[0] == "scale":
                 if len(tStack) == 0:
-                    print "UGE Error: scale command can't be applied to empty stack"
-                    print "\t Failing command: " + " ".join(command)
+                    print format_error(command, "UGE Error: scale command can't be applied to empty stack")
                     break
                 tMat = scale(blank, float(
                     command[1]), float(command[2]), float(command[3]))
@@ -194,8 +199,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
 
             elif command[0] == "move":
                 if len(tStack) == 0:
-                    print "UGE Error: move command can't be applied to empty stack"
-                    print "\t Failing command: " + " ".join(command)
+                    print format_error(command, "UGE Error: move command can't be applied to empty stack")
                     break
                 tMat = translate(blank, float(
                     command[1]), float(command[2]), float(command[3]))
@@ -203,8 +207,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
 
             elif command[0] == "rotate":
                 if len(tStack) == 0:
-                    print "UGE Error: rotate command can't be applied to empty stack"
-                    print "\t Failing command: " + " ".join(command)
+                    print format_error(command, "UGE Error: rotate command can't be applied to empty stack")
                     break
                 tMat = rotate(blank, command[1], float(command[2]))
                 tStack[-1] = multiply(tStack[-1], tMat)
