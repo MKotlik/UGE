@@ -173,7 +173,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                 # set knobname to value
                 symbols[command[1]] = command[2]
 
-            elif command[0] = "setknobs":
+            elif command[0] == "setknobs":
                 # set all knobs to specified value
                 for knob in symbols:
                     symbols[knob] = command[1]
@@ -188,15 +188,6 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                 if len(tStack) == 0:
                     print format_error(command, "UGE Warning: Transformation stack is empty")
 
-            # --- KNOB COMMANDS --#
-
-            elif command[0] == "set":
-                symbols[command[1]] = command[2]
-
-            elif command[0] = "setknobs":
-                for knob in symbols:
-                    symbols[knob] = command[1]
-
             # -- TRANSFORMATION COMMANDS -- #
 
             # NOTE: need to test whether adding knob to symbol table,
@@ -206,23 +197,43 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                 if len(tStack) == 0:
                     print format_error(command, "UGE Error: scale command can't be applied to empty stack")
                     break
+                # If knob given in command, use value from symbol table
+                if command[4] != None:
+                    knob = symbols[command[4]]
+                else:
+                    # Scale by 1 if no knob given
+                    knob = 1
                 tMat = scale(blank, float(
-                    command[1]), float(command[2]), float(command[3]))
+                    command[1]) * knob, float(command[2]) * knob,
+                    float(command[3]) * knob)
                 tStack[-1] = multiply(tStack[-1], tMat)
 
             elif command[0] == "move":
                 if len(tStack) == 0:
                     print format_error(command, "UGE Error: move command can't be applied to empty stack")
                     break
+                # If knob given in command, use value from symbol table
+                if command[4] != None:
+                    knob = symbols[command[4]]
+                else:
+                    # Scale by 1 if no knob given
+                    knob = 1
                 tMat = translate(blank, float(
-                    command[1]), float(command[2]), float(command[3]))
+                    command[1]) * knob, float(command[2]) * knob,
+                    float(command[3]) * knob)
                 tStack[-1] = multiply(tStack[-1], tMat)
 
-            elif command[0] == "rotate":
+            elif command[0] == "rotate"
                 if len(tStack) == 0:
                     print format_error(command, "UGE Error: rotate command can't be applied to empty stack")
                     break
-                tMat = rotate(blank, command[1], float(command[2]))
+                # If knob given in command, use value from symbol table
+                if command[3] != None:
+                    knob = symbols[command[3]]
+                else:
+                    # Scale by 1 if no knob given
+                    knob = 1
+                tMat = rotate(blank, command[1], float(command[2]) * knob)
                 tStack[-1] = multiply(tStack[-1], tMat)
 
             # -- 2D SHAPE COMMANDS -- #
