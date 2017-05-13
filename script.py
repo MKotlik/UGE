@@ -160,14 +160,27 @@ def third_pass(commands, symbols, num_frames, variables, basename):
     # Iterate over frames
     for frame_num in range(num_frames):
         # Set up knobs in symbol table (symbols[knob] = value)
+        # NOTE: am I supposed to set symbol table w/o set command?
+        # NOTE: how am I supposed to access the varibles in the calc funcs?
         for knob_name in variables[frame_num]:
             symbols[knob_name] = variables[frame_num][knob_name]
 
         for command in commands:
 
+            # -- ANIMATION COMMANDS -- #
+
+            if command[0] == "set":
+                # set knobname to value
+                symbols[command[1]] = command[2]
+
+            elif command[0] = "setknobs":
+                # set all knobs to specified value
+                for knob in symbols:
+                    symbols[knob] = command[1]
+
             # -- STACK COMMANDS -- #
 
-            if command[0] == "push":
+            elif command[0] == "push":
                 tStack.append(tStack[-1][:])
 
             elif command[0] == "pop":
