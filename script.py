@@ -4,6 +4,7 @@ from matrix import *
 from draw import *
 from matrixOps import *
 from transformOps import *
+from pprint import pprint
 import time
 
 # NOTE: Apparently curves are unsupported in MDL?
@@ -52,6 +53,7 @@ def run(filename):
         return
 
     # third_pass, iterates over the entire command list and creates each frame
+    #pprint(variables)
     third_pass(commands, symbols, frames, variables, basename, color)
 
 
@@ -120,7 +122,7 @@ def first_pass(commands):
 
 
 def second_pass(commands, num_frames, vary_indices):
-    variables = [{}] * num_frames  # Optimize by avoiding resizing
+    variables = [{} for i in range(num_frames)]  # Optimize by avoiding resizing
     # set first frame to start_val
     # modify subsequent frames by ((end_val - start_val) / (frame diffs))
     for i in vary_indices:
@@ -138,11 +140,12 @@ def second_pass(commands, num_frames, vary_indices):
 
         # set knob for each frame from start_frame to end_frame, inclusive
         for frameN in range(vary[2], vary[3] + 1):
+            frameFactor = frameN - vary[2]
 
             # set value of knob in dict corresponding to current frame to:
             #   v_diff * cur_frame + start_val
             # vary[1] is the knob name
-            variables[frameN][vary[1]] = v_diff * frameN + vary[4]
+            variables[frameN][vary[1]] = (v_diff * frameFactor) + vary[4]
         # NOTE: should I leave the frames after end_frame untouched?
     return (True, variables)
 
@@ -159,6 +162,7 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
 
     # Iterate over frames
     for frame_num in range(num_frames):
+        print symbols
         # Set up knobs in symbol table (symbols[knob] = value)
         # NOTE: am I supposed to set symbol table w/o set command?
         # NOTE: how am I supposed to access the varibles in the calc funcs?
@@ -229,6 +233,8 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
                 tMat = translate(blank, float(
                     command[1]) * knob, float(command[2]) * knob,
                     float(command[3]) * knob)
+                print tStack[-1]
+                print tMat
                 tStack[-1] = multiply(tStack[-1], tMat)
 
             elif command[0] == "rotate":
@@ -287,6 +293,7 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
                 """
                 add_sphere(polygons, int(command[1]), int(command[2]),
                            int(command[3]), int(command[4]), 20)  # adjust steps
+                pprint(tStack[-1])
                 polygons = multiply(tStack[-1], polygons)
                 draw_polygons(polygons, screen, color)
 
@@ -318,10 +325,10 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
             # Auto-save at the end of each frame
             dir_name = "anim/"
             # Calculate the num of digits in largest frame number
-            num_digits = math.floor(math.log10(num_frames)) + 1
+            num_digits = int(math.floor(math.log10(num_frames))) + 1
             # Create a 0-padded frame identifier
-            frm_str = "%0" + str(int(num_digits)) + "d" + "%" + str(frame_num)
-            frame_name = dir_name + basename + frm_str
+            frm_str = str(frame_num).zfill(num_digits)
+            frame_name = dir_name + basename + frm_str + ".png"
             print "UGE: saving image as " + frame_name
             save_extension(screen, frame_name)
 
