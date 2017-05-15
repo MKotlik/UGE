@@ -9,7 +9,7 @@ import time
 # NOTE: Apparently curves are unsupported in MDL?
 
 # GLOBAL SETTINGS:
-DEBUG = True
+DEBUG = False
 
 
 def run(filename):
@@ -46,13 +46,13 @@ def run(filename):
     # variable dictionaries per frame
     # Checking for vary instead of frame number, b/c could have a static gif
     if len(vary_indices) > 0:
-        (second_status, variable_dict) = second_pass(
+        (second_status, variables) = second_pass(
             commands, frames, vary_indices)
     if second_status is False:  # If vary was used improperly, exit
         return
 
     # third_pass, iterates over the entire command list and creates each frame
-    third_pass(commands, frames, variables, basename)
+    third_pass(commands, symbols, frames, variables, basename, color)
 
 
 """======== first_pass( commands, symbols ) ==========
@@ -85,7 +85,7 @@ def first_pass(commands):
             if frames == -1:
                 # TODO: improve error message
                 print format_error(command, "UGE Error: number of frames must be set before a vary call")
-                return (false, frames, basename, vary_indices)
+                return (False, frames, basename, vary_indices)
             vary_indices.append(i)
 
     if frames != -1 and basename is None:
@@ -93,7 +93,7 @@ def first_pass(commands):
         print format_error([], 'UGE Notice: user didn\'t set basename, defaulting to "animation"')
     if frames == -1:
         frames = 0
-    return (true, frames, basename, vary_indices)
+    return (True, frames, basename, vary_indices)
 
 
 """======== second_pass( commands ) ==========
@@ -147,7 +147,7 @@ def second_pass(commands, num_frames, vary_indices):
     return (True, variables)
 
 
-def third_pass(commands, symbols, num_frames, variables, basename):
+def third_pass(commands, symbols, num_frames, variables, basename, color):
     screen = new_screen()
     tStack = [createIdentity(4)]
     # blank is used as a starting point for transformations
@@ -202,7 +202,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     if command[4] in symbols:
                         knob = symbols[command[4]]
                     else:
-                        print format_error(command, "UGE Error: reference to an undefined knob)
+                        print format_error(command, "UGE Error: reference to an undefined knob")
                         break
                 else:
                     # Scale by 1 if no knob given
@@ -221,7 +221,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     if command[4] in symbols:
                         knob = symbols[command[4]]
                     else:
-                        print format_error(command, "UGE Error: reference to an undefined knob)
+                        print format_error(command, "UGE Error: reference to an undefined knob")
                         break
                 else:
                     # Scale by 1 if no knob given
@@ -237,10 +237,10 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     break
                 # If knob given in command, use value from symbol table
                 if command[3] is not None:
-                    if command[4] in symbols:
+                    if command[3] in symbols:
                         knob = symbols[command[3]]
                     else:
-                        print format_error(command, "UGE Error: reference to an undefined knob)
+                        print format_error(command, "UGE Error: reference to an undefined knob")
                         break
                 else:
                     # Scale by 1 if no knob given
@@ -320,11 +320,12 @@ def third_pass(commands, symbols, num_frames, variables, basename):
             # Calculate the num of digits in largest frame number
             num_digits = math.floor(math.log10(num_frames)) + 1
             # Create a 0-padded frame identifier
-            frm_str = "%0" + str(num_digits) + "d" + "%" + str(frame_num)
+            frm_str = "%0" + str(int(num_digits)) + "d" + "%" + str(frame_num)
             frame_name = dir_name + basename + frm_str
             print "UGE: saving image as " + frame_name
             save_extension(screen, frame_name)
 
+        # ENDFOR (frame iteration)
 
 
 def format_error(command, message):
