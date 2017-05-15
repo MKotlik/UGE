@@ -170,7 +170,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
             # -- ANIMATION COMMANDS -- #
 
             if command[0] == "set":
-                # set knobname to value
+                # set knobname to value (or creates and fills said knob)
                 symbols[command[1]] = command[2]
 
             elif command[0] == "setknobs":
@@ -199,7 +199,11 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     break
                 # If knob given in command, use value from symbol table
                 if command[4] is not None:
-                    knob = symbols[command[4]]
+                    if command[4] in symbols:
+                        knob = symbols[command[4]]
+                    else:
+                        print format_error(command, "UGE Error: reference to an undefined knob)
+                        break
                 else:
                     # Scale by 1 if no knob given
                     knob = 1
@@ -214,7 +218,11 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     break
                 # If knob given in command, use value from symbol table
                 if command[4] is not None:
-                    knob = symbols[command[4]]
+                    if command[4] in symbols:
+                        knob = symbols[command[4]]
+                    else:
+                        print format_error(command, "UGE Error: reference to an undefined knob)
+                        break
                 else:
                     # Scale by 1 if no knob given
                     knob = 1
@@ -229,7 +237,11 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     break
                 # If knob given in command, use value from symbol table
                 if command[3] is not None:
-                    knob = symbols[command[3]]
+                    if command[4] in symbols:
+                        knob = symbols[command[3]]
+                    else:
+                        print format_error(command, "UGE Error: reference to an undefined knob)
+                        break
                 else:
                     # Scale by 1 if no knob given
                     knob = 1
