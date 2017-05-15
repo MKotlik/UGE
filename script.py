@@ -39,7 +39,7 @@ def run(filename):
     #   basename, and a list of the indices of the vary
     #   cmds within the command list
     (first_status, frames, basename, vary_indices) = first_pass(commands)
-    if first_status == False:  # If frames or vary were used improperly, exit
+    if first_status is False:  # If frames or vary were used improperly, exit
         return
 
     # second_pass, reads through command list and returns a list of
@@ -48,7 +48,7 @@ def run(filename):
     if len(vary_indices) > 0:
         (second_status, variable_dict) = second_pass(
             commands, frames, vary_indices)
-    if second_status == False:  # If vary was used improperly, exit
+    if second_status is False:  # If vary was used improperly, exit
         return
 
     # third_pass, iterates over the entire command list and creates each frame
@@ -88,7 +88,7 @@ def first_pass(commands):
                 return (false, frames, basename, vary_indices)
             vary_indices.append(i)
 
-    if frames != -1 and basename == None:
+    if frames != -1 and basename is None:
         basename = "animation"
         print format_error([], 'UGE Notice: user didn\'t set basename, defaulting to "animation"')
     if frames == -1:
@@ -198,7 +198,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     print format_error(command, "UGE Error: scale command can't be applied to empty stack")
                     break
                 # If knob given in command, use value from symbol table
-                if command[4] != None:
+                if command[4] is not None:
                     knob = symbols[command[4]]
                 else:
                     # Scale by 1 if no knob given
@@ -213,7 +213,7 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     print format_error(command, "UGE Error: move command can't be applied to empty stack")
                     break
                 # If knob given in command, use value from symbol table
-                if command[4] != None:
+                if command[4] is not None:
                     knob = symbols[command[4]]
                 else:
                     # Scale by 1 if no knob given
@@ -223,12 +223,12 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                     float(command[3]) * knob)
                 tStack[-1] = multiply(tStack[-1], tMat)
 
-            elif command[0] == "rotate"
+            elif command[0] == "rotate":
                 if len(tStack) == 0:
                     print format_error(command, "UGE Error: rotate command can't be applied to empty stack")
                     break
                 # If knob given in command, use value from symbol table
-                if command[3] != None:
+                if command[3] is not None:
                     knob = symbols[command[3]]
                 else:
                     # Scale by 1 if no knob given
@@ -297,8 +297,22 @@ def third_pass(commands, symbols, num_frames, variables, basename):
                 time.sleep(0.5)
 
             elif command[0] == "save":
-                print "UGE: saving imappge with as " + command[1]
+                print "UGE: saving image as " + command[1]
                 save_extension(screen, command[1])
+
+            # -- ENDIF (command identification)
+
+        if len(symbols) > 0:  # If variables and vary are used
+            # Auto-save at the end of each frame
+            dir_name = "anim/"
+            # Calculate the num of digits in largest frame number
+            num_digits = math.floor(math.log10(num_frames)) + 1
+            # Create a 0-padded frame identifier
+            frm_str = "%0" + str(num_digits) + "d" + "%" + str(frame_num)
+            frame_name = dir_name + basename + frm_str
+            print "UGE: saving image as " + frame_name
+            save_extension(screen, frame_name)
+
 
 
 def format_error(command, message):
