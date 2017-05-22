@@ -53,7 +53,7 @@ def run(filename):
         return
 
     # third_pass, iterates over the entire command list and creates each frame
-    #pprint(variables)
+    # pprint(variables)
     third_pass(commands, symbols, frames, variables, basename, color)
 
 
@@ -162,7 +162,8 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
 
     # Iterate over frames
     for frame_num in range(num_frames):
-        print symbols
+        tStack = [createIdentity(4)]
+        # print symbols
         # Set up knobs in symbol table (symbols[knob] = value)
         # NOTE: am I supposed to set symbol table w/o set command?
         # NOTE: how am I supposed to access the varibles in the calc funcs?
@@ -233,8 +234,8 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
                 tMat = translate(blank, float(
                     command[1]) * knob, float(command[2]) * knob,
                     float(command[3]) * knob)
-                print tStack[-1]
-                print tMat
+                # tStack[-1]
+                # print tMat
                 tStack[-1] = multiply(tStack[-1], tMat)
 
             elif command[0] == "rotate":
@@ -293,7 +294,7 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
                 """
                 add_sphere(polygons, int(command[1]), int(command[2]),
                            int(command[3]), int(command[4]), 20)  # adjust steps
-                pprint(tStack[-1])
+                # pprint(tStack[-1])
                 polygons = multiply(tStack[-1], polygons)
                 draw_polygons(polygons, screen, color)
 
@@ -332,7 +333,14 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
             print "UGE: saving image as " + frame_name
             save_extension(screen, frame_name)
 
+            # Clear screen for next frame
+            clear_screen(screen)
+
         # ENDFOR (frame iteration)
+
+    if len(symbols) > 0:  # If variables and vary are used
+        # auto-animate at the end of the animation
+        make_animation(basename)
 
 
 def format_error(command, message):
