@@ -1,0 +1,70 @@
+// Base position & angle
+push
+rotate x 10
+rotate y 0
+move 150 50 0
+// Lamp base
+push
+torus 0 0 0 10 80
+torus 0 1 0 10 60
+torus 0 2 0 9 40
+torus 0 3 0 9 20
+torus 0 4 0 5 10
+pop
+// First leg
+push
+rotate z 40
+box 0 120 0 15 120 15
+pop
+// Second leg
+push
+move -75 90 0
+rotate z -5
+box 0 120 0 15 120 15
+pop
+// Third leg
+push
+move -60 200 0
+rotate z 15
+box 0 15 0 120 15 15
+pop
+// Fourth leg
+push
+move 40 230 0
+box 0 120 0 15 120 15
+pop
+// Lamp head overall
+push
+move 60 350 0
+rotate z 90
+
+// Lamp ring 1
+push
+torus 0 0 0 10 15
+pop
+
+// Lamp ring 2
+push
+move 0 -20 0
+torus 0 0 0 10 20
+pop
+
+// Lamp ring 3
+push
+move 0 -40 0
+torus 0 0 0 10 35
+pop
+
+// Lamp ring 4
+push
+move 0 -60 0
+torus 0 0 0 10 45
+pop
+
+// Lamp ring 5
+push
+move 0 -80 0
+torus 0 0 0 10 50
+pop
+
+display

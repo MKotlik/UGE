@@ -49,8 +49,10 @@ def run(filename):
     if len(vary_indices) > 0:
         (second_status, variables) = second_pass(
             commands, frames, vary_indices)
-    if second_status is False:  # If vary was used improperly, exit
-        return
+        if second_status is False:  # If vary was used improperly, exit
+            return
+    else:
+        variables = []
 
     # third_pass, iterates over the entire command list and creates each frame
     # pprint(variables)
@@ -94,7 +96,7 @@ def first_pass(commands):
         basename = "animation"
         print format_error([], 'UGE Notice: user didn\'t set basename, defaulting to "animation"')
     if frames == -1:
-        frames = 0
+        frames = 1
     return (True, frames, basename, vary_indices)
 
 
@@ -167,8 +169,9 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
         # Set up knobs in symbol table (symbols[knob] = value)
         # NOTE: am I supposed to set symbol table w/o set command?
         # NOTE: how am I supposed to access the varibles in the calc funcs?
-        for knob_name in variables[frame_num]:
-            symbols[knob_name] = variables[frame_num][knob_name]
+        if len(variables) > 1:
+            for knob_name in variables[frame_num]:
+                symbols[knob_name] = variables[frame_num][knob_name]
 
         for command in commands:
 
@@ -293,7 +296,7 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
                            int(command[4]), int(command[5]), 20)  # adjust steps
                 """
                 add_sphere(polygons, int(command[1]), int(command[2]),
-                           int(command[3]), int(command[4]), 20)  # adjust steps
+                           int(command[3]), int(command[4]), 15)  # adjust steps
                 # pprint(tStack[-1])
                 polygons = multiply(tStack[-1], polygons)
                 draw_polygons(polygons, screen, color)
@@ -306,7 +309,7 @@ def third_pass(commands, symbols, num_frames, variables, basename, color):
                           int(command[4]), int(command[5]), int(command[6]), 20)
                 """
                 add_torus(polygons, int(command[1]), int(command[2]),
-                          int(command[3]), int(command[4]), int(command[5]), 20)
+                          int(command[3]), int(command[4]), int(command[5]), 15)
                 polygons = multiply(tStack[-1], polygons)
                 draw_polygons(polygons, screen, color)
 
