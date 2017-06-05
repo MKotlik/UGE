@@ -8,6 +8,7 @@ from display import *
 from matrix import *
 from draw import *
 from matrixOps import *
+import random
 
 
 # +++++++++++++++++ #
@@ -63,7 +64,11 @@ def draw_polygons(points, screen, color):
             # From 2nd to 0th
             draw_line(points[i + 2][0], points[i + 2]
                       [1], points[i][0], points[i][1], screen, color)
-            numShowed += 1
+            # numShowed += 1
+            # Generate a random color for the polygon
+            p_color = generate_random_color()
+            fill_polygon(points[i], points[i+1], points[i+2], screen, p_color)
+            print "Filled a polygon"
         i += 3
     # print "Showed: " + str(numShowed) + "; Culled: " + str((len(points) / 3
     # - numShowed))
@@ -76,6 +81,63 @@ def should_show(point0, point1, point2):
     By = point2[1] - point0[1]  # y2 - y0
     Nz = Ax * By - Ay * Bx
     return Nz > 0
+
+
+def fill_polygon(point0, point1, point2, screen, color):
+    """Fills the specified polygon using scanline conversion.
+    Draws horizontal lines (incrementing the y-value by 1) from bottom to top.
+    """
+    print "polygon filling"
+    def getY(point):
+        return point[1]
+    orderedPoints = sorted([point0, point1, point2], key=getY)
+    print orderedPoints
+    # print point0
+    top = orderedPoints[2]
+    mid = orderedPoints[1]
+    bot = orderedPoints[0]
+    # Slopes of the polygon sides as (x/y)
+    # Check if dy is 0, in which case slope is automatically 0
+    if (top[1] - bot[1]) == 0:
+        dBtoT = 0
+    else:
+        dBtoT = int((top[0] - bot[0]) / (top[1] - bot[1]))
+    if (mid[1] - bot[1]) == 0:
+        dBtoM = 0
+    else:
+        dBtoM = int((mid[0] - bot[0]) / (mid[1] - bot[1]))
+    if (top[1] - mid[1]) == 0:
+        dMtoT = 0
+    else:
+        dMtoT = int((top[0] - mid[0]) / (top[1] - mid[1]))
+    # For y values from the bottom to the midpoint
+    print "should go thru a for loop here: " + str(int(mid[1] - bot[1]))
+    for ycnt in range(0, int(mid[1] - bot[1])):
+        # In x = b + my form
+        x0 = bot[0] + dBtoT * ycnt
+        y0 = bot[1] + ycnt
+        x1 = bot[0] + dBtoM * ycnt
+        y1 = bot[1] + ycnt
+        draw_line(x0, y0, x1, y1, screen, color)
+        print "drew a scanline"
+    # print x0
+    # mid_x0 = x0  # If this works
+    for ycnt in range(0, int(top[1] - mid[1])):
+        # x0 = mid_x0 + dBtoT * ycnt
+        # In x = b + my form
+        x0 = bot[0] + dBtoT * (ycnt + mid[1] - bot[1])
+        y0 = mid[1] + ycnt
+        x1 = mid[0] + dMtoT * ycnt
+        y1 = mid[1] + ycnt
+        draw_line(x0, y0, x1, y1, screen, color)
+
+
+def generate_random_color():
+    """Returns a color list containing random values for R, G, and B"""
+    red = random.randint(0, 255)
+    green = random.randint(0, 255)
+    blue = random.randint(0, 255)
+    return [red, green, blue]
 
 
 # ++++++++++++++++++ #
